@@ -1,5 +1,6 @@
 export const siteNavigation = [
-  { label: "Our product", href: "#product" },
-  { label: "About us", href: "#about" },
-  { label: "Bulk orders", href: "#bulk-orders" },
+  { label: "Shop", href: "/shop/" },
+  { label: "About Us", href: "/about/" },
+  { label: "Bulk Orders", href: "/#bulk-orders" },
+  { label: "Contact", href: "/#contact-details" },
 ] as const;

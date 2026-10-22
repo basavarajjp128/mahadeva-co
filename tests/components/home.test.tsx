@@ -9,5 +9,15 @@ describe("home page", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Coconut copra for wholesale trade.",
     );
+    expect(screen.getByRole("link", { name: /Explore Products/ })).toHaveAttribute(
+      "href",
+      "#product",
+    );
+    expect(
+      screen.getByRole("heading", { name: "Agree the details before you proceed." }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Aerial view of a dense coconut palm plantation." }),
+    ).toHaveAttribute("src", expect.stringContaining("coconut-farm.jpg"));
   });
 });

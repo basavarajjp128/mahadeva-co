@@ -1,6 +1,6 @@
 # SRI MAHADEVA & CO
 
-Static website foundation for the coconut copra wholesale trading business. This repository is set up for Next.js App Router, React, strict TypeScript, Tailwind CSS, and static export. The public website content and catalogue have not yet been implemented.
+Public-facing website for SRI MAHADEVA & CO, a coconut copra wholesale trading business in India. Built with Next.js App Router, React, strict TypeScript, Tailwind CSS, and static export. Home, Shop, sample Product Details, and About Us pages are implemented; contact, catalogue, and company-story details remain editable and should be confirmed before publication.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ npm ci
 npm run dev
 ```
 
-Open <http://localhost:3000>. The current page is only a project placeholder; replace it with approved company content during implementation.
+Open <http://localhost:3000> to preview the site. The Home, About Us, Shop, and catalogue-driven Product Details pages are statically generated and do not require a database or server-side application runtime.
 
 ## Checks
 
@@ -37,9 +37,10 @@ Playwright needs a browser installed once per machine. Install Chromium with `np
 
 ## Project layout
 
-- `src/app/` — App Router entry point and route placeholders
+- `src/app/` — App Router pages and global styles
 - `src/components/` — shared and accessible UI components
-- `src/data/` — typed product catalogue data
+- `src/config/` — brand, contact placeholders, and site navigation
+- `src/data/` — typed product catalogue and editable page copy
 - `src/lib/` — small reusable utilities
 - `tests/` — unit, component, and browser tests
 - `public/` — local static assets
@@ -47,4 +48,6 @@ Playwright needs a browser installed once per machine. Install Chromium with `np
 
 ## Content policy
 
-Do not add unverified company details, contact information, prices, inventory, certifications, or delivery claims. Confirm business facts and obtain permission for image assets before publishing them. See [Security](docs/SECURITY.md) for development and deployment rules.
+Do not add unverified company details, contact information, prices, inventory, certifications, or delivery claims. Review [image credits](docs/IMAGE-CREDITS.md) and replace the clearly labeled temporary stock photos with approved company photography before publication. See [Security](docs/SECURITY.md) for development and deployment rules.
+
+The Shop currently contains a clearly marked sample listing. Quantity input prepares an enquiry only; it does not check inventory, reserve stock, create an order, or calculate a sale total. See [catalogue data guidance](docs/CATALOGUE.md) before replacing sample catalogue content with verified business data.

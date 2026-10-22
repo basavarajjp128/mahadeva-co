@@ -1,14 +1,18 @@
-import Link from "next/link";
+import Image from "next/image";
 
-export function BrandMark() {
+export function BrandMark({ priority = false }: { priority?: boolean }) {
   return (
-    <Link aria-label="SRI MAHADEVA & CO home" className="brand-mark" href="/">
-      <span aria-hidden="true" className="brand-mark__prefix">
-        SRI
-      </span>
-      <span aria-hidden="true" className="brand-mark__name">
-        MAHADEVA <span className="brand-mark__suffix">&amp; CO</span>
-      </span>
-    </Link>
+    <a aria-label="SRI MAHADEVA & CO home" className="brand-mark" href="/">
+      <span className="visually-hidden">SRI MAHADEVA &amp; CO</span>
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="brand-mark__image"
+        height={558}
+        priority={priority}
+        src="/images/sri-mahadeva-logo.png"
+        width={600}
+      />
+    </a>
   );
 }

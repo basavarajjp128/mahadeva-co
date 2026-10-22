@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { siteNavigation } from "@/config/navigation";
-import { ButtonLink } from "@/components/ui/button";
+import { WhatsAppEnquiryLink } from "./whatsapp-enquiry-link";
 import { BrandMark } from "./brand-mark";
 
 function NavigationLinks() {
   return siteNavigation.map((item) => (
-    <Link href={item.href} key={item.href}>
+    <a href={item.href} key={item.href}>
       {item.label}
-    </Link>
+    </a>
   ));
 }
 
@@ -19,21 +18,16 @@ export function SiteHeader() {
       </div>
       <header className="site-header">
         <div className="container site-header__inner">
-          <BrandMark />
+          <BrandMark priority />
           <nav aria-label="Main navigation" className="site-nav desktop-nav">
             <NavigationLinks />
           </nav>
-          <ButtonLink className="header-cta" href="#bulk-orders" size="small">
-            Start an enquiry{" "}
-            <span aria-hidden="true" className="button__arrow">
-              ↗
-            </span>
-          </ButtonLink>
+          <WhatsAppEnquiryLink className="header-cta" size="small" />
           <details className="mobile-nav">
-            <summary aria-label="Open main navigation">Menu</summary>
+            <summary>Main menu</summary>
             <nav aria-label="Mobile navigation" className="site-nav mobile-nav__panel">
               <NavigationLinks />
-              <Link href="#bulk-orders">Start an enquiry ↗</Link>
+              <WhatsAppEnquiryLink className="mobile-nav__cta" size="small" variant="secondary" />
             </nav>
           </details>
         </div>

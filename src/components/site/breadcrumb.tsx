@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 type BreadcrumbItem = {
   label: string;
   href?: string;
@@ -13,7 +11,7 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
 
         return (
           <span aria-current={isLast ? "page" : undefined} key={item.href ?? item.label}>
-            {item.href && !isLast ? <Link href={item.href}>{item.label}</Link> : item.label}
+            {item.href && !isLast ? <a href={item.href}>{item.label}</a> : item.label}
             {!isLast ? (
               <span aria-hidden="true" className="breadcrumb__separator">
                 /

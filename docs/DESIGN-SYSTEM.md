@@ -15,13 +15,16 @@ The first design pass uses an editorial, agricultural-trade visual language: war
 - Site shell: `SiteHeader`, `BrandMark`, `SiteFooter`, and `Breadcrumb` in `src/components/site/`.
 - UI: `Button` / `ButtonLink`, `Card`, `Badge`, `SectionHeading`, accessible form fields, and loading, empty, and error states in `src/components/ui/`.
 - Product card: `ProductCard` in `src/components/catalogue/`, populated from typed entries in `src/data/products.ts`.
-- Brand and links: business copy is in `src/config/brand.ts`; site links are in `src/config/navigation.ts`.
+- Brand, contacts and links: business identity is in `src/config/brand.ts`, contact placeholders are in `src/config/contact.ts`, and shared links are in `src/config/navigation.ts`.
+- Page copy: Home and About Us content is in `src/data/page-content.ts`; replace the visibly marked story placeholder only with business-approved details.
 
-## Imagery and logo insertion
+## Imagery and logo
 
-There is no supplied company logo or approved product photography in the project. `public/images/copra-editorial.svg` is an original local illustration used to demonstrate image placement and crop behavior. Replace it with approved, high-resolution photographs of the actual product when available, and update the `image` and descriptive `imageAlt` in `src/data/products.ts`. Keep assets local and do not add third-party image embeds.
+The business supplied its logo. A transparent PNG version is stored at `public/images/sri-mahadeva-logo.png` and is used by the shared `BrandMark` component in the site header and footer. The original uploaded artwork is preserved outside the repository. The Home and About pages also use locally supplied coconut, farm and husking photographs. Their source and license details were not included with the files; review `docs/IMAGE-CREDITS.md` and confirm usage rights and whether they depict the business before public launch. Keep assets local and do not add third-party image embeds.
 
-The text-based `BrandMark` is intentional and is not a fabricated logo file. When the real logo is supplied, add its asset under `public/images/` and update `src/components/site/brand-mark.tsx`, preserving the accessible name “SRI MAHADEVA & CO”.
+`BrandMark` centralizes logo usage and provides the accessible name “SRI MAHADEVA & CO”. Update that component if a revised approved logo is supplied.
+
+`src/config/contact.ts` intentionally has null contact values until the business provides and approves its WhatsApp number, phone, email and address. Until then, the WhatsApp CTA points to the labeled footer placeholders. Add the full international WhatsApp number there to enable `wa.me` click-to-chat.
 
 ## Interaction and accessibility
 

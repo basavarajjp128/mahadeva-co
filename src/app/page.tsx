@@ -1,142 +1,198 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { ProductCard } from "@/components/catalogue/product-card";
+import { WhatsAppEnquiryLink } from "@/components/site/whatsapp-enquiry-link";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { brand } from "@/config/brand";
+import { homeContent } from "@/data/page-content";
 import { products } from "@/data/products";
 
-export default function Home() {
-  const product = products[0];
+export const metadata: Metadata = {
+  title: "Wholesale Coconut Copra | SRI MAHADEVA & CO",
+  description:
+    "Explore coconut copra wholesale enquiries with SRI MAHADEVA & CO. Discuss product requirements and bulk quote details directly.",
+};
 
+export default function Home() {
   return (
     <main id="main-content">
-      <section aria-labelledby="hero-title" className="hero">
-        <div className="container hero__grid">
-          <div className="hero__content">
-            <p className="eyebrow">Coconut copra · wholesale trade</p>
-            <h1 className="display-heading hero__title" id="hero-title">
-              Coconut copra for <span>wholesale trade.</span>
+      <section aria-labelledby="hero-title" className="home-hero">
+        <figure className="home-hero__image">
+          <Image
+            alt="Aerial view of a dense coconut palm plantation."
+            fill
+            priority
+            sizes="100vw"
+            src="/images/coconut-farm.jpg"
+          />
+          <figcaption className="home-hero__caption">
+            Coconut plantation · illustrative image
+          </figcaption>
+        </figure>
+        <div aria-hidden="true" className="home-hero__overlay" />
+        <div className="container home-hero__inner">
+          <div className="home-hero__content">
+            <p className="home-hero__eyebrow">{homeContent.hero.eyebrow}</p>
+            <h1 className="home-hero__title" id="hero-title">
+              {homeContent.hero.headline}
             </h1>
-            <p className="body-copy hero__description">
-              {brand.name} is a coconut copra wholesale trading business in India. Start with a
-              focused product enquiry and discuss your requirements directly.
-            </p>
-            <div className="hero__actions">
-              <ButtonLink href="#product">
-                Explore the product{" "}
-                <span aria-hidden="true" className="button__arrow">
-                  ↘
-                </span>
+            <p className="home-hero__description">{homeContent.hero.description}</p>
+            <div className="home-hero__actions">
+              <ButtonLink className="home-hero__primary" href="#product">
+                Explore Products <span aria-hidden="true">→</span>
               </ButtonLink>
-              <ButtonLink href="#bulk-orders" variant="secondary">
-                Bulk order enquiries
+              <ButtonLink className="home-hero__secondary" href="#bulk-orders" variant="secondary">
+                Request a Bulk Quote
               </ButtonLink>
             </div>
-            <p className="hero__note">
-              <span aria-hidden="true" className="hero__note-mark">
-                i
-              </span>
-              Product grade, specifications and availability are confirmed during enquiry.
-            </p>
-          </div>
-
-          <figure className="hero-art">
-            <Image
-              alt="Editorial illustration of coconut halves and dried copra pieces"
-              height={760}
-              loading="eager"
-              src="/images/copra-editorial.svg"
-              width={900}
-            />
-            <figcaption className="hero-art__caption">
-              <div>
-                <strong>From coconut to copra</strong>
-                <span>A closer look at the trade</span>
-              </div>
-              <span className="art-index">01 / 01</span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section aria-label="Trade overview" className="trade-note">
-        <div className="container trade-note__grid">
-          <div className="trade-note__item">
-            <span aria-hidden="true" className="trade-note__index">
-              01
-            </span>
-            Coconut copra
-          </div>
-          <div className="trade-note__item">
-            <span aria-hidden="true" className="trade-note__index">
-              02
-            </span>
-            Wholesale enquiries
-          </div>
-          <div className="trade-note__item">
-            <span aria-hidden="true" className="trade-note__index">
-              03
-            </span>
-            Based in India
           </div>
         </div>
       </section>
 
       <section
         aria-labelledby="product-heading"
-        className="catalogue-section section-space"
+        className="home-products section-space"
         id="product"
       >
-        <div className="container catalogue-layout">
-          <div className="catalogue-intro">
-            <SectionHeading eyebrow="Product focus" id="product-heading">
-              A focused copra catalogue.
+        <div className="container home-products__layout">
+          <div className="home-products__intro">
+            <SectionHeading eyebrow={homeContent.products.eyebrow} id="product-heading">
+              {homeContent.products.heading}
             </SectionHeading>
-            <p className="body-copy">
-              Product information stays clear and practical. Discuss grade and quantity needs
-              directly as part of a wholesale enquiry.
-            </p>
+            <p className="body-copy">{homeContent.products.description}</p>
+            <a className="text-link" href="#bulk-orders">
+              Discuss a wholesale requirement <span aria-hidden="true">→</span>
+            </a>
           </div>
-          <ProductCard product={product} />
+          <div className="home-products__card">
+            {products.map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
         </div>
       </section>
 
-      <section aria-labelledby="about-heading" className="about-section section-space" id="about">
-        <div className="container about-section__grid">
-          <SectionHeading eyebrow="About the business" id="about-heading">
-            A trade built around coconut copra.
-          </SectionHeading>
-          <p className="about-section__copy">
-            {brand.description} The focus is to keep product information clear and make wholesale
-            enquiries straightforward.
-          </p>
+      <section aria-label="Business focus" className="home-facts">
+        <div className="container home-facts__grid">
+          {homeContent.tradeFacts.map((item, index) => (
+            <div className="home-facts__item" key={item.title}>
+              <span aria-hidden="true" className="home-facts__number">
+                0{index + 1}
+              </span>
+              <div>
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
       <section
-        aria-labelledby="enquiry-heading"
-        className="enquiry-section section-space"
+        aria-labelledby="bulk-orders-heading"
+        className="home-bulk section-space"
         id="bulk-orders"
       >
         <div className="container">
-          <div className="enquiry-panel">
-            <div className="enquiry-panel__copy">
-              <p className="eyebrow">Wholesale enquiries</p>
-              <h2 className="section-heading" id="enquiry-heading">
-                Planning a bulk requirement?
-              </h2>
-              <p className="body-copy">
-                Share the product grade and volume you have in mind so the enquiry can start with
-                the right details.
-              </p>
+          <div className="home-bulk__intro">
+            <div className="home-bulk__heading">
+              <SectionHeading
+                description={homeContent.wholesale.description}
+                eyebrow={homeContent.wholesale.eyebrow}
+                id="bulk-orders-heading"
+              >
+                {homeContent.wholesale.heading}
+              </SectionHeading>
             </div>
-            <ButtonLink href="#product">
-              Review product details{" "}
-              <span aria-hidden="true" className="button__arrow">
-                ↗
-              </span>
-            </ButtonLink>
+            <figure className="home-bulk__photo">
+              <Image
+                alt="Workers sorting and husking coconuts beneath palm trees."
+                height={450}
+                sizes="(max-width: 48rem) 100vw, 48vw"
+                src="/images/coconut-husking.webp"
+                width={800}
+              />
+              <figcaption>Illustrative coconut husking image</figcaption>
+            </figure>
           </div>
+          <div className="home-bulk__grid">
+            {homeContent.wholesale.steps.map((step, index) => (
+              <article className="home-bulk__step" key={step.title}>
+                <span aria-hidden="true">0{index + 1}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            ))}
+          </div>
+          <p className="home-bulk__note">
+            Product specifications, price, packing and delivery arrangements should be confirmed for
+            each enquiry.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="quality-heading" className="home-quality section-space">
+        <div className="container home-quality__grid">
+          <div>
+            <SectionHeading eyebrow={homeContent.quality.eyebrow} id="quality-heading">
+              {homeContent.quality.heading}
+            </SectionHeading>
+            <p className="body-copy">{homeContent.quality.description}</p>
+          </div>
+          <ul>
+            {homeContent.quality.points.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="about-heading" className="home-about section-space" id="about">
+        <div className="container home-about__grid">
+          <figure className="home-about__photo">
+            <Image
+              alt="Workers handling a large coconut harvest beneath palm trees."
+              height={539}
+              sizes="(max-width: 48rem) 100vw, 48vw"
+              src="/images/coconut-husking-team.webp"
+              width={800}
+            />
+            <div className="home-about__inset">
+              <Image
+                alt="A worker husking a coconut beneath palm trees."
+                height={450}
+                sizes="(max-width: 48rem) 44vw, 18vw"
+                src="/images/coconut-husking.webp"
+                width={800}
+              />
+            </div>
+            <figcaption>Illustrative coconut husking imagery</figcaption>
+          </figure>
+          <div className="home-about__copy">
+            <SectionHeading eyebrow="About us" id="about-heading">
+              SRI MAHADEVA &amp; CO
+            </SectionHeading>
+            <p className="body-copy">{brand.description}</p>
+            <p className="home-about__note">
+              Product origin, grade, packing and trading terms are discussed and confirmed directly
+              for each requirement.
+            </p>
+            <a className="text-link" href="/about/">
+              Learn more about the business <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="enquiry-heading" className="home-enquiry section-space">
+        <div className="container home-enquiry__inner">
+          <div>
+            <p className="home-enquiry__eyebrow">{homeContent.finalEnquiry.eyebrow}</p>
+            <h2 id="enquiry-heading">{homeContent.finalEnquiry.heading}</h2>
+            <p>{homeContent.finalEnquiry.description}</p>
+          </div>
+          <WhatsAppEnquiryLink className="home-enquiry__button" variant="light" />
         </div>
       </section>
     </main>
