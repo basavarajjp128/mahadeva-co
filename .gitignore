@@ -1,0 +1,47 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Tests and coverage
+/coverage
+playwright-report/
+test-results/
+
+# Next.js output
+/.next/
+/out/
+/build
+
+# Local environment files. A sanitized .env.example may be committed.
+.DS_Store
+*.pem
+.env*
+!.env.example
+
+# Logs and debug output
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Deployment metadata
+.vercel
+
+# TypeScript build output
+*.tsbuildinfo
+next-env.d.ts
+
+# Local editor and operating-system files
+.idea/
+.vscode/
+.fleet/
+.history/
+*.swp
+*.swo
+Thumbs.db
