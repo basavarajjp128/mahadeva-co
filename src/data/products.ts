@@ -8,6 +8,8 @@ export type Product = {
   packagingInformation: string | null;
   enquiryAvailability: "contact-not-configured" | "whatsapp";
   isSample: boolean;
+  /** True only for entries in the opt-in local/test catalogue fixture. */
+  isTestData?: boolean;
 };
 
 export const products: Product[] = [

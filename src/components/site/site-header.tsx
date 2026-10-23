@@ -1,14 +1,6 @@
-import { siteNavigation } from "@/config/navigation";
-import { WhatsAppEnquiryLink } from "./whatsapp-enquiry-link";
 import { BrandMark } from "./brand-mark";
-
-function NavigationLinks() {
-  return siteNavigation.map((item) => (
-    <a href={item.href} key={item.href}>
-      {item.label}
-    </a>
-  ));
-}
+import { EnquiryLink } from "./enquiry-link";
+import { NavigationLinks } from "./navigation-links";
 
 export function SiteHeader() {
   return (
@@ -22,12 +14,16 @@ export function SiteHeader() {
           <nav aria-label="Main navigation" className="site-nav desktop-nav">
             <NavigationLinks />
           </nav>
-          <WhatsAppEnquiryLink className="header-cta" size="small" />
+          <EnquiryLink className="header-cta" size="small" variant="primary">
+            Enquire now
+          </EnquiryLink>
           <details className="mobile-nav">
             <summary>Main menu</summary>
             <nav aria-label="Mobile navigation" className="site-nav mobile-nav__panel">
               <NavigationLinks />
-              <WhatsAppEnquiryLink className="mobile-nav__cta" size="small" variant="secondary" />
+              <EnquiryLink className="mobile-nav__cta" size="small" variant="secondary">
+                Enquire now
+              </EnquiryLink>
             </nav>
           </details>
         </div>

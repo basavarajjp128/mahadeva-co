@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { getWhatsAppHref } from "@/config/contact";
 import { ButtonLink } from "@/components/ui/button";
+import { buildWhatsAppEnquiryMessage } from "@/lib/enquiry-message";
 
 type WhatsAppEnquiryLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
   size?: "default" | "small";
@@ -17,18 +18,30 @@ export function WhatsAppEnquiryLink({
   children,
   ...props
 }: WhatsAppEnquiryLinkProps) {
-  const whatsappHref = getWhatsAppHref(message);
+  const enquiryMessage =
+    message ??
+    buildWhatsAppEnquiryMessage({
+      product: "General enquiry",
+    });
+  const whatsappHref = getWhatsAppHref(enquiryMessage);
+
+  if (!whatsappHref) {
+    return (
+      <p className="contact-setup-message">
+        WhatsApp is not configured yet. Add the public business number in
+        <code>src/config/contact.ts</code>.
+      </p>
+    );
+  }
 
   return (
     <ButtonLink
-      aria-label={
-        whatsappHref
-          ? "Start an enquiry on WhatsApp"
-          : "WhatsApp enquiry contact placeholder; see the footer for details"
-      }
+      aria-label={"Open a WhatsApp enquiry draft"}
       className={className}
-      href={whatsappHref ?? "/#contact-details"}
+      href={whatsappHref}
+      rel="noopener noreferrer"
       size={size}
+      target="_blank"
       variant={variant}
       {...props}
     >

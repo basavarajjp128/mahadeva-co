@@ -2,6 +2,8 @@
 
 The first catalogue entry in `src/data/products.ts` is explicitly sample content. It is for demonstrating the page structure and does not represent an offer for sale or confirm product availability. Do not publish it as verified catalogue information.
 
+`src/data/test-products.ts` contains an opt-in development fixture, not production catalogue content. `ENABLE_PAYMENT_TEST_DATA=true` enables those clearly labeled products only when `NODE_ENV` is not `production`. Its ₹35/kg values are test-only and live in the server-only `src/server/payment-test-pricing.ts`. The production guard ignores the switch when building or running with `NODE_ENV=production`.
+
 ## Replacing the sample
 
 Keep catalogue records in `src/data/products.ts` while the catalogue is small. Replace the sample object only after the business has confirmed the details. Keep this module independent of UI components so a future repository adapter can provide the same `Product` shape if the business later needs a database.

@@ -1,21 +1,15 @@
 "use client";
 
 import { useId, useState } from "react";
-import { WhatsAppEnquiryLink } from "@/components/site/whatsapp-enquiry-link";
-import { getWhatsAppHref } from "@/config/contact";
+import { EnquiryLink } from "@/components/site/enquiry-link";
 import { formatQuantity, quantityUnits, validateQuantity } from "@/lib/quantity";
 
-export function QuantityEnquiry({ productName }: { productName: string }) {
+export function QuantityEnquiry({ productSlug }: { productSlug: string }) {
   const id = useId();
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("kg");
+  const [deliveryLocation, setDeliveryLocation] = useState("");
   const result = validateQuantity(quantity, unit);
-  const describedBy = `${id}-hint${quantity ? ` ${id}-error` : ""}`;
-  const message = result.valid
-    ? `Hello, I would like a quotation for ${formatQuantity(result.entered)} ${result.unit} (${formatQuantity(result.kilograms)} kg equivalent) of ${productName}. Please share product information and applicable terms.`
-    : undefined;
-  const enquiryHref = getWhatsAppHref(message);
-
   return (
     <section aria-labelledby={`${id}-heading`} className="quantity-enquiry">
       <h2 id={`${id}-heading`}>Request a quotation</h2>
@@ -27,9 +21,10 @@ export function QuantityEnquiry({ productName }: { productName: string }) {
         <div className="form-field">
           <label htmlFor={`${id}-quantity`}>Quantity</label>
           <input
-            aria-describedby={describedBy}
+            aria-describedby={`${id}-hint${quantity && !result.valid ? ` ${id}-error` : ""}`}
             aria-invalid={Boolean(quantity) && !result.valid}
             autoComplete="off"
+            className="form-control"
             id={`${id}-quantity`}
             inputMode="decimal"
             onChange={(event) => setQuantity(event.currentTarget.value)}
@@ -41,6 +36,7 @@ export function QuantityEnquiry({ productName }: { productName: string }) {
         <div className="form-field">
           <label htmlFor={`${id}-unit`}>Unit</label>
           <select
+            className="form-control"
             id={`${id}-unit`}
             onChange={(event) => setUnit(event.currentTarget.value)}
             value={unit}
@@ -69,20 +65,38 @@ export function QuantityEnquiry({ productName }: { productName: string }) {
           {formatQuantity(result.kilograms / 1_000)} metric ton
         </p>
       ) : null}
-      {result.valid && message && enquiryHref ? (
-        <WhatsAppEnquiryLink message={message} variant="primary">
-          Request quotation by WhatsApp
-        </WhatsAppEnquiryLink>
-      ) : result.valid ? (
-        <p className="quantity-enquiry__contact-note">
-          Quantity equivalent is ready. Add the verified WhatsApp contact in site configuration to
-          send this enquiry; contact details are in the footer.
-        </p>
-      ) : (
-        <p className="quantity-enquiry__contact-note">
-          Enter a valid quantity to prepare your enquiry. Contact details are shown in the footer.
-        </p>
-      )}
+      <div className="form-field">
+        <label className="form-field__label" htmlFor={`${id}-location`}>
+          Delivery location <span className="form-field__hint">(optional)</span>
+        </label>
+        <input
+          autoComplete="shipping address-level2"
+          className="form-control"
+          id={`${id}-location`}
+          maxLength={120}
+          onChange={(event) => setDeliveryLocation(event.currentTarget.value)}
+          placeholder="City or district"
+          type="text"
+          value={deliveryLocation}
+        />
+      </div>
+      <EnquiryLink
+        context={{
+          type: "product",
+          productSlug,
+          quantity: result.valid ? String(result.entered) : undefined,
+          unit: result.valid ? result.unit : undefined,
+          deliveryLocation,
+        }}
+        variant="primary"
+      >
+        Continue to Contact Us
+      </EnquiryLink>
+      <p className="quantity-enquiry__contact-note">
+        {quantity && !result.valid
+          ? "The quantity is invalid and will not be carried to Contact Us. Correct it to include it."
+          : "Your product and valid quantity, if entered, will appear on Contact Us. Nothing is submitted until you choose a contact action."}
+      </p>
     </section>
   );
 }

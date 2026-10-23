@@ -24,11 +24,12 @@ The business supplied its logo. A transparent PNG version is stored at `public/i
 
 `BrandMark` centralizes logo usage and provides the accessible name “SRI MAHADEVA & CO”. Update that component if a revised approved logo is supplied.
 
-`src/config/contact.ts` intentionally has null contact values until the business provides and approves its WhatsApp number, phone, email and address. Until then, the WhatsApp CTA points to the labeled footer placeholders. Add the full international WhatsApp number there to enable `wa.me` click-to-chat.
+`src/config/contact.ts` holds the public business WhatsApp/phone number and email placeholders, plus the unprovided address placeholder. The shared enquiry workflow routes enquiry links to Contact Us; its validated form opens an encoded WhatsApp draft when configured. It never sends or stores enquiries itself. See `docs/CONTACT-WORKFLOW.md` for the browser-only form and future backend requirements.
 
 ## Interaction and accessibility
 
 - The compact navigation uses native `details` and `summary`, so it works with keyboard and without client-side JavaScript.
 - Links and controls have visible focus styles; form fields connect labels, hints, and errors programmatically.
-- Motion is limited to short hover and loading feedback and is reduced for users who request reduced motion.
+- Motion uses a shared, cleaned-up Intersection Observer for small section/card reveals, short CSS transitions for navigation, buttons, cards and gallery images, and a brief hero entrance. Content remains visible when scripting or Intersection Observer is unavailable, and `prefers-reduced-motion` disables these nonessential effects.
+- Header navigation marks the current route with `aria-current="page"`; Shop stays active on its product-detail routes. The mobile disclosure retains native `details`/`summary` behavior, with a short CSS open/close transition where supported.
 - The page uses semantic landmarks, heading order, a skip link, and descriptive alternative text.

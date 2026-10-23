@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ProductCard } from "@/components/catalogue/product-card";
 import { Breadcrumb } from "@/components/site/breadcrumb";
-import { WhatsAppEnquiryLink } from "@/components/site/whatsapp-enquiry-link";
-import { products } from "@/data/products";
+import { EnquiryLink } from "@/components/site/enquiry-link";
+import { getCatalogueProducts } from "@/data/catalogue";
 
 export const metadata: Metadata = {
   title: "Shop | Sample Copra Catalogue",
@@ -11,11 +11,12 @@ export const metadata: Metadata = {
 };
 
 export default function ShopPage() {
+  const products = getCatalogueProducts();
   return (
     <main className="shop-page" id="main-content">
       <div className="container shop-page__container">
         <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Shop" }]} />
-        <header className="shop-page__header">
+        <header className="shop-page__header" data-reveal>
           <p className="eyebrow">Catalogue · sample content</p>
           <h1>Copra for wholesale enquiries</h1>
           <p>
@@ -37,12 +38,12 @@ export default function ShopPage() {
             </p>
           </section>
         )}
-        <aside className="shop-page__enquiry">
+        <aside className="shop-page__enquiry" data-reveal>
           <div>
             <h2>Have a wholesale requirement?</h2>
             <p>Ask for product information and discuss your requirements directly.</p>
           </div>
-          <WhatsAppEnquiryLink>Make an enquiry</WhatsAppEnquiryLink>
+          <EnquiryLink context={{ type: "bulk" }}>Make an enquiry</EnquiryLink>
         </aside>
       </div>
     </main>

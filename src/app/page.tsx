@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ProductCard } from "@/components/catalogue/product-card";
-import { WhatsAppEnquiryLink } from "@/components/site/whatsapp-enquiry-link";
+import { EnquiryLink } from "@/components/site/enquiry-link";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { brand } from "@/config/brand";
 import { homeContent } from "@/data/page-content";
-import { products } from "@/data/products";
+import { getCatalogueProducts } from "@/data/catalogue";
 
 export const metadata: Metadata = {
   title: "Wholesale Coconut Copra | SRI MAHADEVA & CO",
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+  const products = getCatalogueProducts();
   return (
     <main id="main-content">
       <section aria-labelledby="hero-title" className="home-hero">
@@ -42,9 +43,13 @@ export default function Home() {
               <ButtonLink className="home-hero__primary" href="#product">
                 Explore Products <span aria-hidden="true">→</span>
               </ButtonLink>
-              <ButtonLink className="home-hero__secondary" href="#bulk-orders" variant="secondary">
+              <EnquiryLink
+                className="home-hero__secondary"
+                context={{ type: "bulk" }}
+                variant="secondary"
+              >
                 Request a Bulk Quote
-              </ButtonLink>
+              </EnquiryLink>
             </div>
           </div>
         </div>
@@ -56,14 +61,14 @@ export default function Home() {
         id="product"
       >
         <div className="container home-products__layout">
-          <div className="home-products__intro">
+          <div className="home-products__intro" data-reveal>
             <SectionHeading eyebrow={homeContent.products.eyebrow} id="product-heading">
               {homeContent.products.heading}
             </SectionHeading>
             <p className="body-copy">{homeContent.products.description}</p>
-            <a className="text-link" href="#bulk-orders">
-              Discuss a wholesale requirement <span aria-hidden="true">→</span>
-            </a>
+            <EnquiryLink appearance="text" context={{ type: "bulk" }}>
+              Discuss a wholesale requirement
+            </EnquiryLink>
           </div>
           <div className="home-products__card">
             {products.map((product) => (
@@ -76,7 +81,7 @@ export default function Home() {
       <section aria-label="Business focus" className="home-facts">
         <div className="container home-facts__grid">
           {homeContent.tradeFacts.map((item, index) => (
-            <div className="home-facts__item" key={item.title}>
+            <div className="home-facts__item" data-reveal key={item.title}>
               <span aria-hidden="true" className="home-facts__number">
                 0{index + 1}
               </span>
@@ -96,7 +101,7 @@ export default function Home() {
       >
         <div className="container">
           <div className="home-bulk__intro">
-            <div className="home-bulk__heading">
+            <div className="home-bulk__heading" data-reveal>
               <SectionHeading
                 description={homeContent.wholesale.description}
                 eyebrow={homeContent.wholesale.eyebrow}
@@ -105,7 +110,7 @@ export default function Home() {
                 {homeContent.wholesale.heading}
               </SectionHeading>
             </div>
-            <figure className="home-bulk__photo">
+            <figure className="home-bulk__photo" data-reveal>
               <Image
                 alt="Workers sorting and husking coconuts beneath palm trees."
                 height={450}
@@ -118,7 +123,7 @@ export default function Home() {
           </div>
           <div className="home-bulk__grid">
             {homeContent.wholesale.steps.map((step, index) => (
-              <article className="home-bulk__step" key={step.title}>
+              <article className="home-bulk__step" data-reveal key={step.title}>
                 <span aria-hidden="true">0{index + 1}</span>
                 <h3>{step.title}</h3>
                 <p>{step.description}</p>
@@ -134,13 +139,13 @@ export default function Home() {
 
       <section aria-labelledby="quality-heading" className="home-quality section-space">
         <div className="container home-quality__grid">
-          <div>
+          <div data-reveal>
             <SectionHeading eyebrow={homeContent.quality.eyebrow} id="quality-heading">
               {homeContent.quality.heading}
             </SectionHeading>
             <p className="body-copy">{homeContent.quality.description}</p>
           </div>
-          <ul>
+          <ul data-reveal>
             {homeContent.quality.points.map((point) => (
               <li key={point}>{point}</li>
             ))}
@@ -150,7 +155,7 @@ export default function Home() {
 
       <section aria-labelledby="about-heading" className="home-about section-space" id="about">
         <div className="container home-about__grid">
-          <figure className="home-about__photo">
+          <figure className="home-about__photo" data-reveal>
             <Image
               alt="Workers handling a large coconut harvest beneath palm trees."
               height={539}
@@ -169,7 +174,7 @@ export default function Home() {
             </div>
             <figcaption>Illustrative coconut husking imagery</figcaption>
           </figure>
-          <div className="home-about__copy">
+          <div className="home-about__copy" data-reveal>
             <SectionHeading eyebrow="About us" id="about-heading">
               SRI MAHADEVA &amp; CO
             </SectionHeading>
@@ -186,13 +191,19 @@ export default function Home() {
       </section>
 
       <section aria-labelledby="enquiry-heading" className="home-enquiry section-space">
-        <div className="container home-enquiry__inner">
+        <div className="container home-enquiry__inner" data-reveal>
           <div>
             <p className="home-enquiry__eyebrow">{homeContent.finalEnquiry.eyebrow}</p>
             <h2 id="enquiry-heading">{homeContent.finalEnquiry.heading}</h2>
             <p>{homeContent.finalEnquiry.description}</p>
           </div>
-          <WhatsAppEnquiryLink className="home-enquiry__button" variant="light" />
+          <EnquiryLink
+            className="home-enquiry__button"
+            context={{ type: "general" }}
+            variant="light"
+          >
+            Request a quotation
+          </EnquiryLink>
         </div>
       </section>
     </main>

@@ -28,6 +28,7 @@
   "files": {
     "includes": [
       "src/**",
+      "!src/generated",
       "tests/**",
       "docs/**",
       "README.md",

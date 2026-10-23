@@ -1,7 +1,8 @@
 import { brand } from "@/config/brand";
-import { contactDetails } from "@/config/contact";
+import { contactDetails, getMailtoHref, getTelHref } from "@/config/contact";
 import { siteNavigation } from "@/config/navigation";
 import { BrandMark } from "./brand-mark";
+import { EnquiryLink } from "./enquiry-link";
 
 export function SiteFooter() {
   return (
@@ -21,15 +22,29 @@ export function SiteFooter() {
             <dl className="contact-list">
               <div>
                 <dt>WhatsApp</dt>
-                <dd>{contactDetails.whatsappNumber ?? "[Add verified WhatsApp number]"}</dd>
+                <dd>
+                  {contactDetails.whatsappNumber ?? "Not configured — see src/config/contact.ts"}
+                </dd>
               </div>
               <div>
                 <dt>Phone</dt>
-                <dd>{contactDetails.phone ?? "[Add verified business phone]"}</dd>
+                <dd>
+                  {getTelHref() ? (
+                    <a href={getTelHref() ?? undefined}>{contactDetails.phone}</a>
+                  ) : (
+                    "Not configured — see src/config/contact.ts"
+                  )}
+                </dd>
               </div>
               <div>
                 <dt>Email</dt>
-                <dd>{contactDetails.email ?? "[Add verified business email]"}</dd>
+                <dd>
+                  {getMailtoHref() ? (
+                    <a href={getMailtoHref() ?? undefined}>{contactDetails.email}</a>
+                  ) : (
+                    "Not configured — see src/config/contact.ts"
+                  )}
+                </dd>
               </div>
               <div>
                 <dt>Business address</dt>
@@ -45,6 +60,9 @@ export function SiteFooter() {
             </a>
           ))}
         </nav>
+        <EnquiryLink className="site-footer__enquiry" context={{ type: "general" }} size="small">
+          Make an enquiry
+        </EnquiryLink>
       </div>
     </footer>
   );

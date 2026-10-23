@@ -12,4 +12,17 @@ The images listed below were supplied by the business owner in the conversation 
 
 | `public/images/sri-mahadeva-logo.png` | `Sri Mahadeva & Co Rustic Farm Emblem.png` | Header and footer brand mark | Business-supplied logo artwork; outer background made transparent for site use. |
 
+## Gallery images
+
+These four gallery photographs were supplied directly by the business owner for this task and copied unchanged. No creator or license details accompanied them; retain the owner's source and commercial-use permissions with the business records. Captions describe visible subjects and do not claim that the pictured places or people are affiliated with the business.
+
+| Local file                                       | Supplied filename   | Gallery subject                         |
+| ------------------------------------------------ | ------------------- | --------------------------------------- |
+| `public/images/gallery/coconut-plantation.avif`  | `coconut-farm.avif` | Coconut palm plantation                 |
+| `public/images/gallery/harvested-coconuts.webp`  | `coopra1.webp`      | Coconuts gathered on the ground         |
+| `public/images/gallery/coconut-dehusking.jpeg`   | `dehusking.jpeg`    | Workers handling coconuts beneath palms |
+| `public/images/gallery/split-copra-coconuts.jpg` | `cut coopra.jpg`    | Split mature coconuts                   |
+
+The remaining four gallery entries intentionally show placeholders until the owner supplies photographs. See [GALLERY.md](GALLERY.md) for the exact filenames to add.
+
 The captions and alternative text describe the visible scenes. They do not claim the photographed farm, workers, or location belong to SRI MAHADEVA & CO.

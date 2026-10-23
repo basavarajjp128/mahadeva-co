@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PaymentOrderStatus {
+  CREATED
+  PENDING
+  CAPTURED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentAttemptStatus {
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+model PaymentOrder {
+  id                    String             @id @default(uuid()) @db.Uuid
+  productSlug           String             @db.VarChar(80)
+  quantityKilograms     Decimal            @db.Decimal(12, 3)
+  unitPricePaise        Int
+  amountPaise           Int
+  currency              String             @db.Char(3)
+  status                PaymentOrderStatus @default(CREATED)
+  razorpayOrderId       String?            @unique @db.VarChar(64)
+  createdAt             DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime           @updatedAt @db.Timestamptz(3)
+  attempts              PaymentAttempt[]
+
+  @@index([status, createdAt])
+}
+
+model PaymentAttempt {
+  id                    String               @id @default(uuid()) @db.Uuid
+  orderId               String               @db.Uuid
+  razorpayPaymentId     String               @unique @db.VarChar(64)
+  amountPaise           Int
+  amountRefundedPaise   Int                  @default(0)
+  currency              String               @db.Char(3)
+  status                PaymentAttemptStatus
+  createdAt             DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime             @updatedAt @db.Timestamptz(3)
+  order                 PaymentOrder         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId, status])
+}
+
+model WebhookEvent {
+  id                    String   @id @default(uuid()) @db.Uuid
+  providerEventId       String   @unique @db.VarChar(128)
+  eventType             String   @db.VarChar(80)
+  bodySha256            String   @db.Char(64)
+  processedAt           DateTime @default(now()) @db.Timestamptz(3)
+}
+
+model RateLimitBucket {
+  id                    String   @id @default(uuid()) @db.Uuid
+  subjectHash           String   @db.Char(64)
+  windowStart           DateTime @db.Timestamptz(3)
+  count                 Int      @default(0)
+
+  @@unique([subjectHash, windowStart])
+  @@index([windowStart])
+}

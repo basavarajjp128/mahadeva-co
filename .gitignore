@@ -17,6 +17,7 @@ test-results/
 /.next/
 /out/
 /build
+/src/generated/prisma/
 
 # Local environment files. A sanitized .env.example may be committed.
 .DS_Store

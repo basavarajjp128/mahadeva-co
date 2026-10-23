@@ -1,0 +1,57 @@
+import type { Product } from "@/data/products";
+
+/** Local development fixture only. These are examples, not verified business products. */
+export const testProducts: Product[] = [
+  {
+    id: "test-standard-dried-copra",
+    slug: "test-standard-dried-copra",
+    displayName: "Standard Dried Copra · TEST",
+    description:
+      "Development test listing only. This sample does not describe a verified product or offer for sale.",
+    image: "/images/copra-stock.jpg",
+    imageAlt: "Test catalogue image showing dried coconuts",
+    packagingInformation: null,
+    enquiryAvailability: "contact-not-configured",
+    isSample: true,
+    isTestData: true,
+  },
+  {
+    id: "test-premium-dried-copra",
+    slug: "test-premium-dried-copra",
+    displayName: "Premium Dried Copra · TEST",
+    description:
+      "Development test listing only. The sample name is not a verified grade or quality claim.",
+    image: "/images/gallery/split-copra-coconuts.jpg",
+    imageAlt: "Test catalogue image showing copra pieces",
+    packagingInformation: null,
+    enquiryAvailability: "contact-not-configured",
+    isSample: true,
+    isTestData: true,
+  },
+  {
+    id: "test-wholesale-copra",
+    slug: "test-wholesale-copra",
+    displayName: "Wholesale Copra · TEST",
+    description:
+      "Development test listing only. Use this fixture to exercise enquiry-only product behavior.",
+    image: "/images/copra-stock.jpg",
+    imageAlt: "Test catalogue image showing dried coconuts",
+    packagingInformation: null,
+    enquiryAvailability: "contact-not-configured",
+    isSample: true,
+    isTestData: true,
+  },
+  {
+    id: "test-bulk-copra-supply",
+    slug: "test-bulk-copra-supply",
+    displayName: "Bulk Copra Supply · TEST",
+    description:
+      "Development test listing only. This fixture has no stock, delivery, capacity or supply promise.",
+    image: "/images/gallery/split-copra-coconuts.jpg",
+    imageAlt: "Test catalogue image showing copra pieces",
+    packagingInformation: null,
+    enquiryAvailability: "contact-not-configured",
+    isSample: true,
+    isTestData: true,
+  },
+];
