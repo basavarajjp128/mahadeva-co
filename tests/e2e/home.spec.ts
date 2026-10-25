@@ -37,6 +37,19 @@ test("home page presents wholesale product details and clear enquiry actions", a
   );
 });
 
+test("home product highlights show at most two items and link to the full shop", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const productCards = page.locator(".home-products__card .product-card");
+  expect(await productCards.count()).toBeLessThanOrEqual(2);
+
+  await page.getByRole("link", { name: /Explore all products/ }).click();
+  await expect(page).toHaveURL(/\/shop\/$/);
+  await expect(page.getByRole("heading", { name: "Copra for wholesale enquiries" })).toBeVisible();
+});
+
 test("about page has page-specific metadata and an editable story placeholder", async ({
   page,
 }) => {
@@ -109,6 +122,7 @@ test("gallery shows eight subjects, owner-supplied photos and placeholders respo
     expect(hasHorizontalOverflow, `gallery horizontal overflow at ${width}px`).toBe(false);
     if (width < 1024) {
       await expect(page.locator(".mobile-nav summary")).toBeVisible();
+      await page.evaluate(() => window.scrollTo(0, 0));
       const closedMobileMenu = page.locator(".mobile-nav:not([open]) summary");
       if (await closedMobileMenu.count()) {
         await closedMobileMenu.click();
@@ -193,7 +207,7 @@ test("shop and product detail pages clearly identify sample content", async ({ p
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Copra for wholesale enquiries");
   await expect(page.getByText("Sample listing")).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Enquire about this sample" }).first(),
+    page.getByRole("link", { name: /Enquire about this (?:sample|test item)/ }).first(),
   ).toHaveAttribute("href", /\/contact\/\?type=product&product=copra/);
   await expect(page.getByRole("link", { name: /View details/ }).first()).toHaveAttribute(
     "href",
@@ -313,6 +327,44 @@ test("mobile menu opens with keyboard and navigates to About Us", async ({ page 
   await page.locator(".mobile-nav__panel").getByRole("link", { name: "About Us" }).click();
   await expect(page).toHaveURL(/\/about\/$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("mobile menu panel spans the screen and keeps the enquiry button inside it", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.locator(".mobile-nav summary").click();
+
+  const panel = page.locator(".mobile-nav__panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveCSS("width", "390px");
+  await expect(panel).toHaveCSS("background-color", "rgb(248, 245, 238)");
+
+  const panelBox = await panel.boundingBox();
+  const ctaBox = await panel.locator(".mobile-nav__cta").boundingBox();
+  if (!panelBox || !ctaBox)
+    throw new Error("Mobile menu panel or enquiry button has no layout box");
+  expect(ctaBox.x).toBeGreaterThanOrEqual(panelBox.x);
+  expect(ctaBox.x + ctaBox.width).toBeLessThanOrEqual(panelBox.x + panelBox.width);
+});
+
+test("mobile menu closes on scroll and can be opened again at the top", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  const mobileMenu = page.locator(".mobile-nav");
+  await mobileMenu.locator("summary").click();
+  await expect(mobileMenu).toHaveAttribute("open", "");
+
+  await page.evaluate(() => window.scrollTo(0, 400));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await expect(mobileMenu).not.toHaveAttribute("open", "");
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await mobileMenu.locator("summary").click();
+  await expect(page.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible();
 });
 
 test("mobile menu exposes and opens Contact and Bulk Orders routes", async ({ page }) => {

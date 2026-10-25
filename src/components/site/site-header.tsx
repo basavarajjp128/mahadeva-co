@@ -1,4 +1,5 @@
 import { BrandMark } from "./brand-mark";
+import { CloseMobileMenuOnScroll } from "./close-mobile-menu-on-scroll";
 import { EnquiryLink } from "./enquiry-link";
 import { NavigationLinks } from "./navigation-links";
 
@@ -9,6 +10,7 @@ export function SiteHeader() {
         <p>Wholesale coconut copra · India</p>
       </div>
       <header className="site-header">
+        <CloseMobileMenuOnScroll />
         <div className="container site-header__inner">
           <BrandMark priority />
           <nav aria-label="Main navigation" className="site-nav desktop-nav">

@@ -12,6 +12,8 @@ The images listed below were supplied by the business owner in the conversation 
 
 | `public/images/sri-mahadeva-logo.png` | `Sri Mahadeva & Co Rustic Farm Emblem.png` | Header and footer brand mark | Business-supplied logo artwork; outer background made transparent for site use. |
 
+| `public/images/farmer-copra.avif` | `farmercoconut.avif` | Sell Your Copra hero | Farmer-supplied coconut farming photograph. |
+
 ## Gallery images
 
 These four gallery photographs were supplied directly by the business owner for this task and copied unchanged. No creator or license details accompanied them; retain the owner's source and commercial-use permissions with the business records. Captions describe visible subjects and do not claim that the pictured places or people are affiliated with the business.

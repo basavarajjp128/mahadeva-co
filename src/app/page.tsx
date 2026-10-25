@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const products = getCatalogueProducts();
+  const products = getCatalogueProducts().slice(0, 2);
   return (
     <main id="main-content">
       <section aria-labelledby="hero-title" className="home-hero">
@@ -51,6 +51,9 @@ export default function Home() {
                 Request a Bulk Quote
               </EnquiryLink>
             </div>
+            <p className="home-hero__farmer-link">
+              For farmers: <a href="/sell-your-copra/">Sell your copra</a>
+            </p>
           </div>
         </div>
       </section>
@@ -74,6 +77,11 @@ export default function Home() {
             {products.map((product) => (
               <ProductCard key={product.slug} product={product} />
             ))}
+          </div>
+          <div className="home-products__more" data-reveal>
+            <ButtonLink href="/shop/" variant="secondary">
+              Explore all products <span aria-hidden="true">→</span>
+            </ButtonLink>
           </div>
         </div>
       </section>
