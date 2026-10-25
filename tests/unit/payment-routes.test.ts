@@ -10,12 +10,12 @@ const paymentMocks = vi.hoisted(() => ({
   },
   razorpay: { payments: { fetch: vi.fn() }, orders: { create: vi.fn() } },
 }));
-const { getActiveProductBySlug } = vi.hoisted(() => ({ getActiveProductBySlug: vi.fn() }));
+const { getCheckoutProductBySlug } = vi.hoisted(() => ({ getCheckoutProductBySlug: vi.fn() }));
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/prisma", () => ({ getPrismaClient: () => paymentMocks.prisma }));
 vi.mock("@/server/razorpay", () => ({ createRazorpayClient: () => paymentMocks.razorpay }));
-vi.mock("@/server/catalogue", () => ({ getActiveProductBySlug }));
+vi.mock("@/server/catalogue", () => ({ getCheckoutProductBySlug }));
 
 import { createHmac } from "node:crypto";
 import { POST as createOrder } from "@/app/api/payments/orders/route";
@@ -61,7 +61,7 @@ describe("payment route boundaries", () => {
     setTestPaymentEnvironment();
     vi.stubEnv("ENABLE_PAYMENT_TEST_DATA", "false");
     vi.clearAllMocks();
-    getActiveProductBySlug.mockImplementation(async (slug: string) =>
+    getCheckoutProductBySlug.mockImplementation(async (slug: string) =>
       slug === "copra"
         ? sampleProduct
         : (testProducts.find((product) => product.slug === slug) ?? null),
@@ -117,7 +117,7 @@ describe("payment route boundaries", () => {
   });
 
   it("uses the active database product price for the server-calculated Razorpay order", async () => {
-    getActiveProductBySlug.mockResolvedValueOnce({
+    getCheckoutProductBySlug.mockResolvedValueOnce({
       ...sampleProduct,
       isSample: false,
       price: "40.00",

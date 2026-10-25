@@ -12,7 +12,6 @@ export function RevealObserver() {
     }
 
     const root = document.documentElement;
-    let revealIndex = 0;
     const registeredTargets = new WeakSet<Element>();
     const intersectionObserver = new IntersectionObserver(
       (entries, observer) => {
@@ -42,10 +41,7 @@ export function RevealObserver() {
           continue;
         }
         registeredTargets.add(target);
-        const stagger = Math.min(revealIndex % 5, 4) * 65;
-        target.style.setProperty("--reveal-delay", `${stagger}ms`);
         intersectionObserver.observe(target);
-        revealIndex += 1;
       }
     }
 
@@ -68,7 +64,6 @@ export function RevealObserver() {
       root.classList.remove("motion-enabled");
       document.querySelectorAll("[data-reveal]").forEach((element) => {
         element.classList.remove("is-revealed");
-        if (element instanceof HTMLElement) element.style.removeProperty("--reveal-delay");
       });
     };
   }, []);

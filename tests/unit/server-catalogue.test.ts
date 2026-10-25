@@ -7,7 +7,11 @@ const catalogueDb = vi.hoisted(() => ({
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/prisma", () => ({ getPrismaClient: () => catalogueDb }));
 
-import { getActiveProductBySlug, getActiveProducts } from "@/server/catalogue";
+import {
+  getActiveProductBySlug,
+  getActiveProducts,
+  getCheckoutProductBySlug,
+} from "@/server/catalogue";
 
 const databaseProduct = {
   id: "00000000-0000-4000-8000-000000000001",
@@ -39,6 +43,14 @@ describe("server catalogue queries", () => {
     expect(catalogueDb.product.findMany).toHaveBeenCalledWith({
       where: { isActive: true },
       orderBy: [{ category: "asc" }, { displayName: "asc" }],
+      select: {
+        id: true,
+        slug: true,
+        displayName: true,
+        description: true,
+        category: true,
+        isActive: true,
+      },
     });
     expect(products).toEqual([
       expect.objectContaining({
@@ -57,34 +69,41 @@ describe("server catalogue queries", () => {
     await expect(getActiveProductBySlug("unavailable-product")).resolves.toBeNull();
     expect(catalogueDb.product.findFirst).toHaveBeenCalledWith({
       where: { slug: "unavailable-product", isActive: true },
+      select: {
+        id: true,
+        slug: true,
+        displayName: true,
+        description: true,
+        category: true,
+        isActive: true,
+      },
     });
   });
 
-  it("rejects unsafe slugs and falls back from untrusted external or traversal image paths", async () => {
+  it("rejects unsafe slugs and uses a local placeholder image", async () => {
     await expect(getActiveProductBySlug("../private")).resolves.toBeNull();
     expect(catalogueDb.product.findFirst).not.toHaveBeenCalled();
 
-    catalogueDb.product.findMany.mockResolvedValue([
-      { ...databaseProduct, image: "https://outside.example/image.jpg" },
-      { ...databaseProduct, slug: "copra-traversal", image: "/images/../secret.jpg" },
-    ]);
+    catalogueDb.product.findMany.mockResolvedValue([databaseProduct]);
     const products = await getActiveProducts();
-    expect(products.map((product) => product.image)).toEqual([
-      "/images/copra-stock.jpg",
-      "/images/copra-stock.jpg",
-    ]);
+    expect(products.map((product) => product.image)).toEqual(["/images/copra-stock.jpg"]);
   });
 
-  it("adds development test fixtures only when opted in outside production", async () => {
+  it("keeps development fixtures out of storefront results but available to the payment test path", async () => {
     vi.stubEnv("NODE_ENV", "development");
     vi.stubEnv("ENABLE_PAYMENT_TEST_DATA", "true");
     catalogueDb.product.findMany.mockResolvedValue([databaseProduct]);
     const products = await getActiveProducts();
 
-    expect(products).toHaveLength(5);
-    expect(products.filter((product) => product.isTestData)).toHaveLength(4);
+    expect(products).toHaveLength(1);
+    expect(products.map((product) => product.slug)).toEqual(["copra"]);
+    catalogueDb.product.findFirst.mockResolvedValue(null);
+    await expect(getActiveProductBySlug("test-standard-dried-copra")).resolves.toBeNull();
+    await expect(getCheckoutProductBySlug("test-standard-dried-copra")).resolves.toMatchObject({
+      isTestData: true,
+    });
 
     vi.stubEnv("NODE_ENV", "production");
-    expect(await getActiveProductBySlug("test-standard-dried-copra")).toBeNull();
+    await expect(getCheckoutProductBySlug("test-standard-dried-copra")).resolves.toBeNull();
   });
 });

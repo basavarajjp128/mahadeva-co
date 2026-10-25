@@ -17,7 +17,7 @@ import {
 import { getPrismaClient } from "@/server/prisma";
 import { consumeOrderRateLimit } from "@/server/payment-rate-limit";
 import { createRazorpayClient } from "@/server/razorpay";
-import { getActiveProductBySlug } from "@/server/catalogue";
+import { getCheckoutProductBySlug } from "@/server/catalogue";
 import { getTestCheckoutPrice } from "@/server/payment-test-pricing";
 
 export const runtime = "nodejs";
@@ -49,9 +49,9 @@ export async function POST(request: Request): Promise<Response> {
     return paymentError(400, "The payment request is invalid.");
   }
 
-  let product: Awaited<ReturnType<typeof getActiveProductBySlug>>;
+  let product: Awaited<ReturnType<typeof getCheckoutProductBySlug>>;
   try {
-    product = await getActiveProductBySlug(input.productSlug);
+    product = await getCheckoutProductBySlug(input.productSlug);
   } catch {
     return paymentError(503, "Checkout is temporarily unavailable. Please request a quotation.");
   }
