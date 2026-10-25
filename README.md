@@ -34,14 +34,14 @@ npm run build         # Production server build
 npm run start         # Start the built Next.js Node server
 npm run db:generate   # Generate the Prisma client
 npm run db:migrate:dev # Create/apply development migrations (requires DATABASE_URL)
-npm run db:migrate:deploy # Apply committed migrations in an approved environment
+npm run db:migrate:deploy # Apply committed migrations in an approved environment (DATABASE_URL)
 npm run deps:audit    # npm dependency advisory review
 npm outdated          # Review available dependency updates
 ```
 
 Playwright needs a browser installed once per machine. Install Chromium with `npx playwright install chromium` before running browser tests.
 
-`npm run build` creates a Next.js server build. Run it with `npm run start` on a Node.js host that supports App Router Route Handlers, HTTPS, runtime secrets, and connections to the configured PostgreSQL database. Do not deploy the `out/` folder or use a static-only host. See [Payment security and setup](docs/PAYMENT-SECURITY.md) before configuring payment credentials or applying migrations.
+`npm run build` creates a Next.js server build. Run it with `npm run start` on a Node.js host that supports App Router Route Handlers, HTTPS, runtime secrets, and connections to the configured PostgreSQL database. Do not deploy the `out/` folder or use a static-only host. Prisma CLI operations use `DATABASE_URL`; the running application uses `APP_DATABASE_URL` and should receive only the dedicated runtime role connection. See [Payment security and setup](docs/PAYMENT-SECURITY.md) before configuring payment credentials or applying migrations.
 
 ## Project layout
 

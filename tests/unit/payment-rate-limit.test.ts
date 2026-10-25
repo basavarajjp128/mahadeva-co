@@ -13,7 +13,7 @@ vi.mock("@/server/prisma", () => ({
 import { consumeOrderRateLimit } from "@/server/payment-rate-limit";
 
 const config = {
-  DATABASE_URL: "postgresql://test_user:test_password@127.0.0.1:5432/test_db",
+  APP_DATABASE_URL: "postgresql://test_user:test_password@127.0.0.1:5432/test_db",
   APP_ORIGIN: "http://localhost:3000",
   RAZORPAY_KEY_ID: "rzp_test_ABCDEFGHIJKLMNOP",
   RAZORPAY_KEY_SECRET: "test_only_secret_for_unit_tests",

@@ -21,7 +21,7 @@ import { POST as verifyPayment } from "@/app/api/payments/verify/route";
 import { POST as receiveWebhook } from "@/app/api/payments/webhook/route";
 
 function setTestPaymentEnvironment() {
-  vi.stubEnv("DATABASE_URL", "postgresql://test_user:test_password@127.0.0.1:5432/test_db");
+  vi.stubEnv("APP_DATABASE_URL", "postgresql://test_user:test_password@127.0.0.1:5432/test_db");
   vi.stubEnv("APP_ORIGIN", "http://localhost:3000");
   vi.stubEnv("RAZORPAY_KEY_ID", "rzp_test_ABCDEFGHIJKLMNOP");
   vi.stubEnv("RAZORPAY_KEY_SECRET", "test_only_secret_for_payment_unit_tests");

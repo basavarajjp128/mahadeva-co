@@ -3,7 +3,7 @@ import "server-only";
 import { z } from "zod";
 
 const serverPaymentEnvSchema = z.object({
-  DATABASE_URL: z
+  APP_DATABASE_URL: z
     .string()
     .min(1)
     .refine((value) => !value.includes("placeholder")),
@@ -34,7 +34,7 @@ export function readServerPaymentEnv(
   const parsed = serverPaymentEnvSchema.safeParse(source);
   if (!parsed.success) return null;
   try {
-    const databaseUrl = new URL(parsed.data.DATABASE_URL);
+    const databaseUrl = new URL(parsed.data.APP_DATABASE_URL);
     if (!(["postgres:", "postgresql:"].includes(databaseUrl.protocol) && databaseUrl.hostname)) {
       return null;
     }
