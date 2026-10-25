@@ -3,11 +3,35 @@ import { describe, expect, it, vi } from "vitest";
 import ShopPage from "@/app/shop/page";
 import { QuantityEnquiry } from "@/components/catalogue/quantity-enquiry";
 import { EnquiryWorkflow } from "@/components/enquiries/enquiry-workflow";
-import { products } from "@/data/products";
+import type { Product } from "@/types/product";
+const { sampleProduct } = vi.hoisted(() => ({
+  sampleProduct: {
+    id: "00000000-0000-4000-8000-000000000001",
+    slug: "copra",
+    displayName: "Coconut copra",
+    description: "Sample listing for enquiry testing.",
+    image: "/images/copra-stock.jpg",
+    imageAlt: "Dried coconuts",
+    packagingInformation: null,
+    enquiryAvailability: "whatsapp",
+    isSample: true,
+    category: "copra",
+    isActive: true,
+    price: null,
+    priceCurrency: null,
+    priceUnit: null,
+    supportedSalesUnits: [],
+    isDirectCheckoutEnabled: false,
+  },
+}));
+
+vi.mock("@/server/catalogue", () => ({
+  getActiveProducts: vi.fn(async () => [sampleProduct]),
+}));
 
 describe("shop page", () => {
-  it("labels sample listings and links them to details without purchase language", () => {
-    render(<ShopPage />);
+  it("labels sample listings and links them to details without purchase language", async () => {
+    render(await ShopPage());
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Copra for wholesale enquiries",
@@ -15,9 +39,9 @@ describe("shop page", () => {
     expect(screen.getByText("Sample listing")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /View details/ })).toHaveAttribute(
       "href",
-      `/shop/${products[0].slug}/`,
+      `/shop/${sampleProduct.slug}/`,
     );
-    expect(screen.getByText(/not offers for sale/)).toBeInTheDocument();
+    expect(screen.getByText(/not for purchase/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /buy|add to cart/i })).not.toBeInTheDocument();
   });
 
@@ -33,7 +57,7 @@ describe("shop page", () => {
 
   it("validates an enquiry and opens the configured business WhatsApp conversation directly", () => {
     const openSpy = vi.spyOn(window, "open").mockReturnValue(null);
-    render(<EnquiryWorkflow mode="bulk" />);
+    render(<EnquiryWorkflow mode="bulk" products={[sampleProduct as Product]} />);
     const form = screen.getByRole("button", { name: "Enquire Now" }).closest("form");
     expect(form).not.toBeNull();
     const formScope = within(form as HTMLFormElement);

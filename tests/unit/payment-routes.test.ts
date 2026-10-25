@@ -10,15 +10,19 @@ const paymentMocks = vi.hoisted(() => ({
   },
   razorpay: { payments: { fetch: vi.fn() }, orders: { create: vi.fn() } },
 }));
+const { getActiveProductBySlug } = vi.hoisted(() => ({ getActiveProductBySlug: vi.fn() }));
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/prisma", () => ({ getPrismaClient: () => paymentMocks.prisma }));
 vi.mock("@/server/razorpay", () => ({ createRazorpayClient: () => paymentMocks.razorpay }));
+vi.mock("@/server/catalogue", () => ({ getActiveProductBySlug }));
 
 import { createHmac } from "node:crypto";
 import { POST as createOrder } from "@/app/api/payments/orders/route";
 import { POST as verifyPayment } from "@/app/api/payments/verify/route";
 import { POST as receiveWebhook } from "@/app/api/payments/webhook/route";
+import { sampleProduct } from "../fixtures/product";
+import { testProducts } from "@/data/test-products";
 
 function setTestPaymentEnvironment() {
   vi.stubEnv("APP_DATABASE_URL", "postgresql://test_user:test_password@127.0.0.1:5432/test_db");
@@ -57,6 +61,11 @@ describe("payment route boundaries", () => {
     setTestPaymentEnvironment();
     vi.stubEnv("ENABLE_PAYMENT_TEST_DATA", "false");
     vi.clearAllMocks();
+    getActiveProductBySlug.mockImplementation(async (slug: string) =>
+      slug === "copra"
+        ? sampleProduct
+        : (testProducts.find((product) => product.slug === slug) ?? null),
+    );
     paymentMocks.prisma.paymentOrder.findUnique.mockResolvedValue(null);
     paymentMocks.prisma.paymentAttempt.findUnique.mockResolvedValue(null);
     paymentMocks.prisma.paymentAttempt.upsert.mockResolvedValue({});
@@ -105,6 +114,42 @@ describe("payment route boundaries", () => {
     await expect(response.json()).resolves.toMatchObject({
       error: expect.stringContaining("not configured"),
     });
+  });
+
+  it("uses the active database product price for the server-calculated Razorpay order", async () => {
+    getActiveProductBySlug.mockResolvedValueOnce({
+      ...sampleProduct,
+      isSample: false,
+      price: "40.00",
+      priceCurrency: "INR",
+      priceUnit: "KG",
+      supportedSalesUnits: ["KG"],
+      isDirectCheckoutEnabled: true,
+    });
+    paymentMocks.razorpay.orders.create.mockResolvedValueOnce({
+      id: "order_databaseprice",
+      amount: 8_000,
+      currency: "INR",
+    });
+
+    const response = await createOrder(
+      request("/api/payments/orders", { productSlug: "copra", quantity: "2", unit: "kg" }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(paymentMocks.prisma.paymentOrder.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          productSlug: "copra",
+          quantityKilograms: 2,
+          unitPricePaise: 4_000,
+          amountPaise: 8_000,
+        }),
+      }),
+    );
+    expect(paymentMocks.razorpay.orders.create).toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 8_000, currency: "INR" }),
+    );
   });
 
   it("creates a ₹35/kg Razorpay test order below 300 kg and rejects 300 kg", async () => {

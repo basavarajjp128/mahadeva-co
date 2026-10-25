@@ -15,7 +15,7 @@ export default function ProductNotFound() {
         <section className="status-state" role="status">
           <h1 className="status-state__title">Product not found</h1>
           <p className="status-state__description">
-            This item is not in the current sample catalogue.
+            This item is not in the active product catalogue.
           </p>
           <ButtonLink href="/shop/" size="small">
             Return to Shop

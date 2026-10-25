@@ -1,4 +1,4 @@
-import type { Product } from "@/data/products";
+import type { Product } from "@/types/product";
 
 /** Local development fixture only. These are examples, not verified business products. */
 export const testProducts: Product[] = [
@@ -14,6 +14,13 @@ export const testProducts: Product[] = [
     enquiryAvailability: "contact-not-configured",
     isSample: true,
     isTestData: true,
+    category: "copra",
+    isActive: true,
+    price: null,
+    priceCurrency: null,
+    priceUnit: null,
+    supportedSalesUnits: [],
+    isDirectCheckoutEnabled: false,
   },
   {
     id: "test-premium-dried-copra",
@@ -27,6 +34,13 @@ export const testProducts: Product[] = [
     enquiryAvailability: "contact-not-configured",
     isSample: true,
     isTestData: true,
+    category: "copra",
+    isActive: true,
+    price: null,
+    priceCurrency: null,
+    priceUnit: null,
+    supportedSalesUnits: [],
+    isDirectCheckoutEnabled: false,
   },
   {
     id: "test-wholesale-copra",
@@ -40,6 +54,13 @@ export const testProducts: Product[] = [
     enquiryAvailability: "contact-not-configured",
     isSample: true,
     isTestData: true,
+    category: "copra",
+    isActive: true,
+    price: null,
+    priceCurrency: null,
+    priceUnit: null,
+    supportedSalesUnits: [],
+    isDirectCheckoutEnabled: false,
   },
   {
     id: "test-bulk-copra-supply",
@@ -53,5 +74,12 @@ export const testProducts: Product[] = [
     enquiryAvailability: "contact-not-configured",
     isSample: true,
     isTestData: true,
+    category: "copra",
+    isActive: true,
+    price: null,
+    priceCurrency: null,
+    priceUnit: null,
+    supportedSalesUnits: [],
+    isDirectCheckoutEnabled: false,
   },
 ];

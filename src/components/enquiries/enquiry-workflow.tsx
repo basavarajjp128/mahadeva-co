@@ -3,7 +3,7 @@
 import { useEffect, useId, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { contactDetails, getMailtoHref, getWhatsAppHref } from "@/config/contact";
-import { products as defaultProducts, type Product } from "@/data/products";
+import type { Product } from "@/types/product";
 import { formatEnquiryType, getEnquiryProduct, parseEnquiryContext } from "@/lib/enquiry-context";
 import { buildWhatsAppEnquiryMessage } from "@/lib/enquiry-message";
 import type { EnquiryErrors, EnquiryMode, EnquiryValues } from "@/lib/enquiry-validation";
@@ -31,7 +31,7 @@ function FieldError({ error, id }: { error?: string; id: string }) {
   ) : null;
 }
 
-export function EnquiryWorkflow({ mode, products = defaultProducts }: EnquiryWorkflowProps) {
+export function EnquiryWorkflow({ mode, products = [] }: EnquiryWorkflowProps) {
   const id = useId();
   const isBulk = mode === "bulk";
   const [values, setValues] = useState(initialValues);

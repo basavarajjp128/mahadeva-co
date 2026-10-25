@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Product } from "@/data/products";
+import type { Product } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EnquiryLink } from "@/components/site/enquiry-link";
@@ -15,14 +15,20 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="product-card__title" id={`product-${product.slug}`}>
             {product.displayName}
           </h3>
-          <Badge>{product.isTestData ? "TEST ONLY" : "Sample listing"}</Badge>
+          <Badge>
+            {product.isTestData ? "TEST ONLY" : product.isSample ? "Sample listing" : "Catalogue"}
+          </Badge>
         </div>
-        <p className="product-card__description">{product.description}</p>
+        {product.description ? (
+          <p className="product-card__description">{product.description}</p>
+        ) : null}
         <div className="product-card__footer">
           <span className="product-card__detail">
             {product.isTestData
               ? "Development fixture · no real offer"
-              : "Information only · not for purchase"}
+              : product.isSample
+                ? "Information only · not for purchase"
+                : "Enquire to confirm terms"}
           </span>
           <ButtonLink href={`/shop/${product.slug}/`} size="small" variant="secondary">
             View details{" "}

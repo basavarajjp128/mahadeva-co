@@ -9,6 +9,7 @@ import {
 import { buildContactHref, parseEnquiryContext } from "@/lib/enquiry-context";
 import { buildWhatsAppEnquiryMessage } from "@/lib/enquiry-message";
 import { validateEnquiry, type EnquiryValues } from "@/lib/enquiry-validation";
+import { sampleProduct } from "../fixtures/product";
 
 const emptyValues: EnquiryValues = {
   name: "",
@@ -103,7 +104,7 @@ describe("Contact Us query context", () => {
       deliveryLocation: "Mysuru & district",
     });
     expect(href).toContain("/contact/?");
-    const parsed = parseEnquiryContext(href.split("?")[1]);
+    const parsed = parseEnquiryContext(href.split("?")[1], [sampleProduct]);
     expect(parsed).toEqual({
       type: "product",
       productSlug: "copra",
@@ -118,6 +119,7 @@ describe("Contact Us query context", () => {
       parseEnquiryContext(
         "?type=javascript%3Aalert(1)&product=%3Csvg%3E&quantity=Infinity&unit=ton&location=" +
           "x".repeat(121),
+        [sampleProduct],
       ),
     ).toEqual({ type: "general" });
     expect(
@@ -133,14 +135,14 @@ describe("Contact Us query context", () => {
 
 describe("contact and bulk form validation", () => {
   it("rejects empty required values for contact and bulk enquiries", () => {
-    const contactErrors = validateEnquiry(emptyValues, "contact");
+    const contactErrors = validateEnquiry(emptyValues, "contact", [sampleProduct]);
     expect(contactErrors.name).toBeTruthy();
     expect(contactErrors.email).toContain("either a phone number or an email");
     expect(contactErrors.message).toBeTruthy();
     expect(contactErrors.productSlug).toBeUndefined();
     expect(contactErrors.quantity).toBeUndefined();
 
-    const bulkErrors = validateEnquiry(emptyValues, "bulk");
+    const bulkErrors = validateEnquiry(emptyValues, "bulk", [sampleProduct]);
     expect(bulkErrors.productSlug).toBeTruthy();
     expect(bulkErrors.quantity).toBe("Enter an approximate quantity.");
   });
@@ -158,6 +160,7 @@ describe("contact and bulk form validation", () => {
         deliveryLocation: "x".repeat(121),
       },
       "bulk",
+      [sampleProduct],
     );
     expect(errors.name).toContain("100 characters");
     expect(errors.phone).toContain("valid phone number");
@@ -180,6 +183,7 @@ describe("contact and bulk form validation", () => {
         unit: "metric ton",
       },
       "bulk",
+      [sampleProduct],
     );
     expect(errors).toEqual({});
   });

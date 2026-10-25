@@ -1,21 +1,9 @@
-# Product catalogue data
+# Catalogue data
 
-The first catalogue entry in `src/data/products.ts` is explicitly sample content. It is for demonstrating the page structure and does not represent an offer for sale or confirm product availability. Do not publish it as verified catalogue information.
+The live catalogue is the `public.products` table in Supabase PostgreSQL. The Shop, product details, home highlights, Contact selector and checkout price lookup read through server-only Prisma code.
 
-`src/data/test-products.ts` contains an opt-in development fixture, not production catalogue content. `ENABLE_PAYMENT_TEST_DATA=true` enables those clearly labeled products only when `NODE_ENV` is not `production`. Its ₹35/kg values are test-only and live in the server-only `src/server/payment-test-pricing.ts`. The production guard ignores the switch when building or running with `NODE_ENV=production`.
+See [database-backed product catalogue guidance](PRODUCT-CATALOGUE.md) for the existing-table migration, RLS/grants, seed behavior, price rules, environment variables and safe run steps.
 
-## Replacing the sample
+`src/data/products.ts` is retained as the sample catalogue seed input. `src/data/test-products.ts` is a separate local-only fixture. Its products and ₹35/kg test prices are never written to the database or used in production.
 
-Keep catalogue records in `src/data/products.ts` while the catalogue is small. Replace the sample object only after the business has confirmed the details. Keep this module independent of UI components so a future repository adapter can provide the same `Product` shape if the business later needs a database.
-
-For each verified item, maintain:
-- A stable unique `id` and URL-safe unique `slug`.
-- The approved `displayName` and a factual `description`.
-- A local image path under `public/images/`, approved for business use, with useful `imageAlt` text.
-- `packagingInformation` only when the business has verified it; otherwise keep `null`.
-- `enquiryAvailability` to reflect whether the configured enquiry channel is actually ready. This field describes the contact path only and must not mean stock availability.
-- `isSample: false` only after the business has reviewed and approved that record.
-
-Do not add price, stock, grades, moisture levels, certifications, guarantees, delivery terms or purchase claims unless they are confirmed and the site is deliberately updated to represent them. The quantity widget is for preparing an enquiry only. Its 1,000,000 kg input ceiling is a software validation limit, not a supply limit.
-
-Before replacing sample data, verify each detail with the business owner, review the image source and usage rights, check the product detail page and alt text, then run `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build`.
+Do not add unverified prices, stock levels, grades, moisture values, certifications, guarantees, delivery terms or purchase claims. Product quantity controls remain quotation tools unless checkout is explicitly enabled for a verified active database product.

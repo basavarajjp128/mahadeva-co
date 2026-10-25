@@ -1,18 +1,23 @@
-export type Product = {
-  id: string;
-  slug: string;
-  displayName: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-  packagingInformation: string | null;
-  enquiryAvailability: "contact-not-configured" | "whatsapp";
-  isSample: boolean;
-  /** True only for entries in the opt-in local/test catalogue fixture. */
-  isTestData?: boolean;
-};
+import type { Product } from "@/types/product";
 
-export const products: Product[] = [
+export type { Product } from "@/types/product";
+
+/** Sample data is retained only as an explicit Prisma seed input. */
+
+export type SeedProduct = Pick<
+  Product,
+  | "id"
+  | "slug"
+  | "displayName"
+  | "description"
+  | "image"
+  | "imageAlt"
+  | "packagingInformation"
+  | "enquiryAvailability"
+  | "isSample"
+>;
+
+export const products: SeedProduct[] = [
   {
     id: "sample-copra",
     slug: "copra",

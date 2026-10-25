@@ -3,7 +3,9 @@ import { ContactContext } from "@/components/enquiries/contact-context";
 import { EnquiryWorkflow } from "@/components/enquiries/enquiry-workflow";
 import { Breadcrumb } from "@/components/site/breadcrumb";
 import { contactDetails, getTelHref } from "@/config/contact";
-import { getCatalogueProducts } from "@/data/catalogue";
+import { getActiveProducts } from "@/server/catalogue";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -11,8 +13,8 @@ export const metadata: Metadata = {
     "Contact SRI MAHADEVA & CO about coconut copra wholesale requirements by WhatsApp or email.",
 };
 
-export default function ContactPage() {
-  const catalogueProducts = getCatalogueProducts();
+export default async function ContactPage() {
+  const catalogueProducts = await getActiveProducts();
   return (
     <main className="enquiry-page" id="main-content">
       <div className="container enquiry-page__container">
@@ -46,7 +48,7 @@ export default function ContactPage() {
               </div>
             </dl>
             <div className="contact-options__actions">
-              <ContactContext />
+              <ContactContext products={catalogueProducts} />
               {getTelHref() ? (
                 <a href={getTelHref() ?? undefined}>Call {contactDetails.phone}</a>
               ) : null}

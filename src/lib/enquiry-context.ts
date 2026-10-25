@@ -1,4 +1,4 @@
-import { products, type Product } from "@/data/products";
+import type { Product } from "@/types/product";
 import { isQuantityUnit, validateQuantity, type QuantityUnit } from "@/lib/quantity";
 
 export type EnquiryType = "general" | "product" | "bulk";
@@ -14,10 +14,7 @@ export type EnquiryContext = {
 const isEnquiryType = (value: string | null): value is EnquiryType =>
   value === "general" || value === "product" || value === "bulk";
 
-export function parseEnquiryContext(
-  search: string,
-  catalogue: Product[] = products,
-): EnquiryContext {
+export function parseEnquiryContext(search: string, catalogue: Product[] = []): EnquiryContext {
   if (search.length > 512) return { type: "general" };
   const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
   const rawType = params.get("type");
@@ -80,7 +77,7 @@ export function buildContactHref(context: Partial<EnquiryContext> = {}): string 
   return `/contact/?${params.toString()}`;
 }
 
-export function getEnquiryProduct(context: EnquiryContext, catalogue: Product[] = products) {
+export function getEnquiryProduct(context: EnquiryContext, catalogue: Product[] = []) {
   return catalogue.find((product) => product.slug === context.productSlug);
 }
 

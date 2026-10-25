@@ -11,16 +11,17 @@ import {
 } from "@/lib/enquiry-context";
 import { buildWhatsAppEnquiryMessage } from "@/lib/enquiry-message";
 import { formatQuantity, validateQuantity } from "@/lib/quantity";
+import type { Product } from "@/types/product";
 
-export function ContactContext() {
+export function ContactContext({ products }: { products: Product[] }) {
   const [context, setContext] = useState<EnquiryContext | null>(null);
 
   useEffect(() => {
-    setContext(parseEnquiryContext(window.location.search));
-  }, []);
+    setContext(parseEnquiryContext(window.location.search, products));
+  }, [products]);
 
   const activeContext = context ?? { type: "general" as const };
-  const product = getEnquiryProduct(activeContext);
+  const product = getEnquiryProduct(activeContext, products);
   const quantityResult = activeContext.quantity
     ? validateQuantity(activeContext.quantity, activeContext.unit ?? "")
     : null;

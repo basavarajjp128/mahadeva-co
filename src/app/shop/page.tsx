@@ -2,26 +2,28 @@ import type { Metadata } from "next";
 import { ProductCard } from "@/components/catalogue/product-card";
 import { Breadcrumb } from "@/components/site/breadcrumb";
 import { EnquiryLink } from "@/components/site/enquiry-link";
-import { getCatalogueProducts } from "@/data/catalogue";
+import { getActiveProducts } from "@/server/catalogue";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Shop | Sample Copra Catalogue",
+  title: "Shop | SRI MAHADEVA & CO",
   description:
-    "Browse sample coconut copra catalogue information from SRI MAHADEVA & CO and enquire about wholesale requirements.",
+    "Browse coconut copra listings from SRI MAHADEVA & CO and enquire about wholesale requirements.",
 };
 
-export default function ShopPage() {
-  const products = getCatalogueProducts();
+export default async function ShopPage() {
+  const products = await getActiveProducts();
   return (
     <main className="shop-page" id="main-content">
       <div className="container shop-page__container">
         <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Shop" }]} />
         <header className="shop-page__header" data-reveal>
-          <p className="eyebrow">Catalogue · sample content</p>
+          <p className="eyebrow">Wholesale catalogue</p>
           <h1>Copra for wholesale enquiries</h1>
           <p>
-            This initial catalogue illustrates how product information is presented. Listings are
-            samples for discussion only and are not offers for sale or confirmation of availability.
+            Browse active catalogue listings and enquire about product details. Prices, quantities,
+            packaging and trading terms must be confirmed directly.
           </p>
         </header>
         {products.length > 0 ? (

@@ -6,7 +6,9 @@ import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { brand } from "@/config/brand";
 import { homeContent } from "@/data/page-content";
-import { getCatalogueProducts } from "@/data/catalogue";
+import { getActiveProducts } from "@/server/catalogue";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Wholesale Coconut Copra | SRI MAHADEVA & CO",
@@ -14,8 +16,8 @@ export const metadata: Metadata = {
     "Explore coconut copra wholesale enquiries with SRI MAHADEVA & CO. Discuss product requirements and bulk quote details directly.",
 };
 
-export default function Home() {
-  const products = getCatalogueProducts().slice(0, 2);
+export default async function Home() {
+  const products = (await getActiveProducts()).slice(0, 2);
   return (
     <main id="main-content">
       <section aria-labelledby="hero-title" className="home-hero">
@@ -74,9 +76,16 @@ export default function Home() {
             </EnquiryLink>
           </div>
           <div className="home-products__card">
-            {products.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
+            {products.length > 0 ? (
+              products.map((product) => <ProductCard key={product.slug} product={product} />)
+            ) : (
+              <section className="status-state" role="status">
+                <h3 className="status-state__title">Product details are being prepared</h3>
+                <p className="status-state__description">
+                  Contact us to discuss a copra wholesale requirement.
+                </p>
+              </section>
+            )}
           </div>
           <div className="home-products__more" data-reveal>
             <ButtonLink href="/shop/" variant="secondary">

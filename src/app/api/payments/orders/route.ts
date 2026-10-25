@@ -17,7 +17,7 @@ import {
 import { getPrismaClient } from "@/server/prisma";
 import { consumeOrderRateLimit } from "@/server/payment-rate-limit";
 import { createRazorpayClient } from "@/server/razorpay";
-import { getCatalogueProducts } from "@/data/catalogue";
+import { getActiveProductBySlug } from "@/server/catalogue";
 import { getTestCheckoutPrice } from "@/server/payment-test-pricing";
 
 export const runtime = "nodejs";
@@ -49,8 +49,13 @@ export async function POST(request: Request): Promise<Response> {
     return paymentError(400, "The payment request is invalid.");
   }
 
-  const product = getCatalogueProducts().find((item) => item.slug === input.productSlug);
-  const price = getCheckoutPrice(input.productSlug);
+  let product: Awaited<ReturnType<typeof getActiveProductBySlug>>;
+  try {
+    product = await getActiveProductBySlug(input.productSlug);
+  } catch {
+    return paymentError(503, "Checkout is temporarily unavailable. Please request a quotation.");
+  }
+  const price = getCheckoutPrice(product);
   const quantity = parsePaymentQuantity(input.quantity, input.unit);
   const isTestFixture = Boolean(product?.isTestData && getTestCheckoutPrice(input.productSlug));
   if (!product || (!isTestFixture && product.isSample) || !price || !quantity) {

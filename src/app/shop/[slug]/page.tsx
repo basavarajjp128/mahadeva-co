@@ -5,35 +5,34 @@ import { QuantityEnquiry } from "@/components/catalogue/quantity-enquiry";
 import { PaymentCheckout } from "@/components/catalogue/payment-checkout";
 import { Breadcrumb } from "@/components/site/breadcrumb";
 import { Badge } from "@/components/ui/badge";
-import { getCatalogueProducts } from "@/data/catalogue";
+import { getActiveProductBySlug } from "@/server/catalogue";
 import { getCheckoutPrice, getDisplayPrice } from "@/server/payment-pricing";
 import { readServerPaymentEnv } from "@/server/payment-env";
 
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return getCatalogueProducts().map(({ slug }) => ({ slug }));
-}
+export const dynamicParams = true;
 
 type ProductPageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getCatalogueProducts().find((entry) => entry.slug === slug);
+  const product = await getActiveProductBySlug(slug);
   if (!product) return { title: "Product not found" };
 
   return {
-    title: `${product.displayName} | Sample Product Details`,
-    description: `${product.displayName} sample catalogue information for wholesale enquiries with SRI MAHADEVA & CO.`,
+    title: `${product.displayName} | SRI MAHADEVA & CO`,
+    description:
+      product.description ?? `Product information for ${product.displayName} wholesale enquiries.`,
   };
 }
 
 export default async function ProductDetailsPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getCatalogueProducts().find((entry) => entry.slug === slug);
+  const product = await getActiveProductBySlug(slug);
   if (!product) notFound();
-  const displayPrice = getDisplayPrice(product.slug);
-  const checkoutPrice = getCheckoutPrice(product.slug);
+  const displayPrice = getDisplayPrice(product);
+  const checkoutPrice = getCheckoutPrice(product);
   const checkoutEnabled = Boolean(checkoutPrice && readServerPaymentEnv());
 
   return (
@@ -58,16 +57,20 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 src={product.image}
               />
             </div>
-            <figcaption>Sample catalogue image</figcaption>
+            <figcaption>Product image</figcaption>
           </figure>
           <article aria-labelledby="product-title" className="product-detail__content" data-reveal>
             <Badge>
               {product.isTestData
                 ? "Development test fixture · TEST ONLY"
-                : "Sample listing · information only"}
+                : product.isSample
+                  ? "Sample listing · information only"
+                  : "Wholesale catalogue listing"}
             </Badge>
             <h1 id="product-title">{product.displayName}</h1>
-            <p className="product-detail__description">{product.description}</p>
+            {product.description ? (
+              <p className="product-detail__description">{product.description}</p>
+            ) : null}
             <dl className="product-detail__facts">
               <div>
                 <dt>Packaging</dt>
@@ -78,13 +81,15 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                 <dd>
                   {product.isTestData
                     ? "Development fixture only; not a real product or offer"
-                    : "Sample content; not listed for purchase"}
+                    : product.isSample
+                      ? "Sample content; not listed for purchase"
+                      : "Enquire to confirm availability and trading terms"}
                 </dd>
               </div>
             </dl>
             <PaymentCheckout
               enabled={checkoutEnabled}
-              isTestData={Boolean(displayPrice && product.isTestData)}
+              isTestData={Boolean(product.isTestData && displayPrice)}
               testDirectCheckoutAllowed={Boolean(checkoutPrice?.onlineCheckoutApproved)}
               pricePerKgMinor={displayPrice?.pricePerKgMinor}
               priceCurrency={displayPrice?.currency}

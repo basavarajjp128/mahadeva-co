@@ -1,4 +1,4 @@
-import { products, type Product } from "@/data/products";
+import type { Product } from "@/types/product";
 import { isQuantityUnit, validateQuantity } from "@/lib/quantity";
 
 export type EnquiryMode = "contact" | "bulk";
@@ -20,7 +20,7 @@ export type EnquiryErrors = Partial<Record<EnquiryField, string>>;
 export function validateEnquiry(
   values: EnquiryValues,
   mode: EnquiryMode,
-  catalogue: Product[] = products,
+  catalogue: Product[] = [],
 ): EnquiryErrors {
   const errors: EnquiryErrors = {};
   const name = values.name.trim();
