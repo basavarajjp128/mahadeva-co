@@ -18,6 +18,12 @@ export function ProductCard({
         <Image alt={product.imageAlt} height={760} src={product.image} width={900} />
       </div>
       <div className="product-card__body">
+        {product.categoryName ? (
+          <p className="product-card__category">
+            {product.categoryParentName ? `${product.categoryParentName} / ` : ""}
+            {product.categoryName}
+          </p>
+        ) : null}
         <div className="product-card__topline">
           <Title className="product-card__title" id={`product-${product.slug}`}>
             {product.displayName}
@@ -28,6 +34,21 @@ export function ProductCard({
         </div>
         {product.description ? (
           <p className="product-card__description">{product.description}</p>
+        ) : null}
+        {product.supplyOptions && product.supplyOptions.length > 0 ? (
+          <ul aria-label="Supply options" className="product-card__supply">
+            {product.supplyOptions.slice(0, 3).map((option) => (
+              <li key={option.id}>
+                {option.packSize
+                  ? `${Number(option.packSize)} ${option.unitSymbol}`
+                  : option.unitName}{" "}
+                · {option.packagingName}
+              </li>
+            ))}
+            {product.supplyOptions.length > 3 ? (
+              <li>+{product.supplyOptions.length - 3} more</li>
+            ) : null}
+          </ul>
         ) : null}
         <div className="product-card__footer">
           <span className="product-card__detail">

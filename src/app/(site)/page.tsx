@@ -11,7 +11,7 @@ import { getActiveProducts } from "@/server/catalogue";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Wholesale Coconut Copra | SRI MAHADEVA & CO",
+  title: "Wholesale Coconut Copra",
   description:
     "Explore coconut copra wholesale enquiries with SRI MAHADEVA & CO. Discuss product requirements and bulk quote details directly.",
 };

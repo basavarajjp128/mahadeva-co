@@ -536,6 +536,11 @@ body {
   text-align: right;
 }
 
+.admin-table__actions form {
+  display: inline-flex;
+  margin-left: 0.35rem;
+}
+
 /* Badges ----------------------------------------------------------------- */
 
 .admin-badge {
@@ -1511,6 +1516,130 @@ body {
   }
 
   .admin-page-header__actions {
+    width: 100%;
+  }
+}
+
+/* Taxonomy ---------------------------------------------------------------- */
+
+.admin-btn--danger {
+  border-color: rgb(148 42 35 / 32%);
+  background: rgb(148 42 35 / 8%);
+  color: #8d2b24;
+}
+
+.admin-btn--danger:hover {
+  border-color: #8d2b24;
+  background: #8d2b24;
+  color: #fff;
+}
+
+.admin-tree-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-left: 1.1rem;
+}
+
+.admin-tree-child::before {
+  content: "↳";
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.admin-card--danger {
+  border-color: rgb(148 42 35 / 26%);
+  background: #fffaf8;
+}
+
+.admin-card--danger p {
+  margin: 0 0 0.9rem;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+
+.admin-facts {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.admin-facts > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.admin-facts dt {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-facts a {
+  color: var(--color-forest);
+  text-decoration: none;
+}
+
+.admin-facts a:hover {
+  text-decoration: underline;
+}
+
+.admin-stack--tight {
+  gap: 0.45rem;
+}
+
+.admin-details {
+  position: relative;
+}
+
+.admin-details summary {
+  display: inline-flex;
+  cursor: pointer;
+  list-style: none;
+}
+
+.admin-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-details__body {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  width: min(30rem, 88vw);
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  box-shadow: 0 18px 40px rgb(62 39 35 / 16%);
+}
+
+.admin-table__actions .admin-details + form {
+  display: inline-flex;
+}
+
+.admin-form--sub {
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.admin-form__subheading {
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 64rem) {
+  .admin-details__body {
+    position: static;
     width: 100%;
   }
 }

@@ -16,6 +16,24 @@ const { sampleProduct } = vi.hoisted(() => ({
     enquiryAvailability: "whatsapp",
     isSample: true,
     category: "copra",
+    categoryId: "00000000-0000-4000-8000-000000000099",
+    categoryName: "Coconut Copra",
+    categorySlug: "coconut-copra",
+    categoryParentName: "Agricultural Products",
+    categoryParentSlug: "agricultural-products",
+    supplyOptions: [
+      {
+        id: "option-1",
+        unitName: "Kilogram",
+        unitSymbol: "kg",
+        unitType: "weight",
+        packagingName: "Sack",
+        packagingDescription: "Large agricultural commodity sack",
+        packSize: "25.000",
+        minimumOrder: "1.000",
+        isDefault: true,
+      },
+    ],
     isActive: true,
     price: null,
     priceCurrency: null,
@@ -31,7 +49,7 @@ vi.mock("@/server/catalogue", () => ({
 
 describe("shop page", () => {
   it("labels sample listings and links them to details without purchase language", async () => {
-    render(await ShopPage());
+    render(await ShopPage({ searchParams: Promise.resolve({}) }));
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Copra for wholesale enquiries",
@@ -42,7 +60,24 @@ describe("shop page", () => {
       `/shop/${sampleProduct.slug}/`,
     );
     expect(screen.getByText(/not for purchase/)).toBeInTheDocument();
+    expect(screen.getByText("25 kg · Sack")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /buy|add to cart/i })).not.toBeInTheDocument();
+  });
+
+  it("offers parent and child category filters and narrows the catalogue", async () => {
+    render(
+      await ShopPage({ searchParams: Promise.resolve({ category: "agricultural-products" }) }),
+    );
+
+    const nav = screen.getByRole("navigation", { name: "Filter products by category" });
+    expect(within(nav).getByRole("link", { name: "Agricultural Products" })).toHaveAttribute(
+      "href",
+      expect.stringContaining("category=agricultural-products"),
+    );
+    expect(within(nav).getByRole("link", { name: "Agricultural Products / Coconut Copra" }))
+      .toHaveAttribute("href", expect.stringContaining("category=coconut-copra"));
+    expect(screen.getByRole("status")).toHaveTextContent("1 product in Agricultural Products");
+    expect(screen.getByRole("heading", { name: "Coconut copra" })).toBeInTheDocument();
   });
 
   it("converts an enquiry quantity and rejects zero in the form", () => {

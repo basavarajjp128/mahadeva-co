@@ -3078,3 +3078,175 @@ svg {
     animation: none;
   }
 }
+
+/* Catalogue categories and supply options --------------------------------- */
+
+.shop-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shop-filters__label {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shop-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.42rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-brown);
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.shop-filter:hover {
+  border-color: var(--color-forest);
+  color: var(--color-forest);
+}
+
+.shop-filter--active {
+  border-color: var(--color-forest);
+  background: var(--color-forest);
+  color: #fff;
+}
+
+.shop-filter--active:hover {
+  color: #fff;
+}
+
+.shop-filter--child {
+  font-size: 0.78rem;
+}
+
+.shop-filter--group {
+  font-weight: 650;
+}
+
+.shop-page__count {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+
+.product-card__category {
+  margin: 0 0 0.35rem;
+  color: var(--color-forest);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.product-card__supply {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.product-card__supply li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-muted);
+  font-size: 0.74rem;
+}
+
+.product-detail__category {
+  margin: 0;
+  color: var(--color-forest);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.product-detail__facts dd a {
+  color: var(--color-forest);
+  text-decoration: none;
+}
+
+.product-detail__facts dd a:hover {
+  text-decoration: underline;
+}
+
+.product-detail__supply {
+  display: grid;
+  width: 100%;
+  gap: 0.8rem;
+}
+
+.product-detail__supply h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.supply-options {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.supply-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.supply-option--default {
+  border-color: rgb(27 94 32 / 35%);
+  background: #f7faf2;
+}
+
+.supply-option__main {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.supply-option__title {
+  margin: 0;
+  font-weight: 650;
+}
+
+.supply-option__meta {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.product-detail__supply-note {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 40rem) {
+  .supply-option {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

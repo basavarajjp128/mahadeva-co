@@ -11,6 +11,7 @@ import {
 import { AdminAlert, AdminField, AdminPageHeader } from "@/components/admin/ui";
 import { ProductImageUpload } from "@/components/admin/product-image-upload";
 import { requireAdmin } from "@/server/admin/auth";
+import { listCategoryChoices } from "@/server/admin/categories";
 import { getProductDetail } from "@/server/admin/data";
 import { formatDateTime, formatKg, formatMoney } from "@/server/admin/format";
 
@@ -48,6 +49,7 @@ export default async function AdminProductPage({ params, searchParams }: PagePro
 
   const product = await getProductDetail(id);
   if (!product) notFound();
+  const categories = await listCategoryChoices();
 
   const query = await searchParams;
   const error = first(query.error);
@@ -109,15 +111,31 @@ export default async function AdminProductPage({ params, searchParams }: PagePro
                     required
                   />
                 </AdminField>
-                <AdminField id="category" label="Category">
-                  <input
+                <AdminField
+                  hint="Controls the shop category and the quantity/packaging options shown."
+                  id="categoryId"
+                  label="Category"
+                >
+                  <select
+                    aria-describedby="categoryId-hint"
                     className="admin-input"
-                    defaultValue={product.category}
-                    id="category"
-                    maxLength={40}
-                    name="category"
+                    defaultValue={product.categoryId ?? ""}
+                    id="categoryId"
+                    name="categoryId"
                     required
-                  />
+                  >
+                    <option disabled value="">
+                      Select a category
+                    </option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.parentName
+                          ? `${category.parentName} › ${category.name}`
+                          : category.name}
+                        {category.isActive ? "" : " (hidden)"}
+                      </option>
+                    ))}
+                  </select>
                 </AdminField>
                 <div className="admin-field admin-field--check">
                   <label className="admin-check" htmlFor="isActive">

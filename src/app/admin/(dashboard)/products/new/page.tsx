@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminPageHeader } from "@/components/admin/ui";
 import { requireEditor } from "@/server/admin/auth";
+import { listCategoryChoices } from "@/server/admin/categories";
 import { NewProductForm } from "./new-product-form";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function NewProductPage() {
   await requireEditor();
+  const categories = await listCategoryChoices();
 
   return (
     <>
@@ -27,7 +29,7 @@ export default async function NewProductPage() {
       />
 
       <section className="admin-card admin-card--form">
-        <NewProductForm />
+        <NewProductForm categories={categories} />
       </section>
     </>
   );

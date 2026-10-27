@@ -15,6 +15,11 @@ const items = [
     path: "M21 8.5 12 3 3 8.5 12 14l9-5.5ZM3 8.5v7L12 21l9-5.5v-7M12 14v7",
   },
   {
+    href: "/admin/categories/",
+    label: "Categories",
+    path: "M4 5h6l2 2h8v12H4V5Zm4 8h8M8 9h3",
+  },
+  {
     href: "/admin/inventory/",
     label: "Inventory",
     path: "M4 6h16M4 12h16M4 18h10M18 16v6M15 19h6",

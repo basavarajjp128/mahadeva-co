@@ -35,6 +35,7 @@ model Product {
   slug                    String             @unique @db.Text
   description             String?            @db.Text
   category                String             @default("copra") @db.Text
+  categoryId              String?            @map("category_id") @db.Uuid
   isActive                Boolean            @default(false) @map("is_active")
   createdAt               DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   price                   Decimal?           @db.Decimal(14, 4)
@@ -47,9 +48,78 @@ model Product {
   isSample                Boolean            @default(true) @map("is_sample")
   isDirectCheckoutEnabled Boolean            @default(false) @map("is_direct_checkout_enabled")
   updatedAt               DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  categoryRef             ProductCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@index([isActive, displayName])
+  @@index([categoryId])
   @@map("products")
+}
+
+model ProductCategory {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String   @db.Text
+  slug         String   @unique @db.Text
+  parentId     String?  @map("parent_id") @db.Uuid
+  description  String?  @db.Text
+  imageUrl     String?  @map("image_url") @db.Text
+  isActive     Boolean  @default(true) @map("is_active")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  parent   ProductCategory?  @relation("ProductCategoryTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children ProductCategory[] @relation("ProductCategoryTree")
+  options  CategoryOption[]
+  products Product[]
+
+  @@index([parentId])
+  @@index([isActive, displayOrder])
+  @@map("product_categories")
+}
+
+model QuantityUnit {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String   @unique @db.Text
+  symbol           String   @unique @db.Text
+  unitType         String   @map("unit_type") @db.Text
+  baseUnitSymbol   String?  @map("base_unit_symbol") @db.Text
+  conversionToBase Decimal? @map("conversion_to_base") @db.Decimal(18, 6)
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  options          CategoryOption[]
+
+  @@map("quantity_units")
+}
+
+model PackagingType {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique @db.Text
+  description String?  @db.Text
+  isReusable  Boolean  @default(false) @map("is_reusable")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  options     CategoryOption[]
+
+  @@map("packaging_types")
+}
+
+model CategoryOption {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  categoryId           String   @map("category_id") @db.Uuid
+  quantityUnitId       String   @map("quantity_unit_id") @db.Uuid
+  packagingTypeId      String   @map("packaging_type_id") @db.Uuid
+  defaultPackSize      Decimal? @map("default_pack_size") @db.Decimal(12, 3)
+  minimumOrderQuantity Decimal  @default(1) @map("minimum_order_quantity") @db.Decimal(12, 3)
+  isDefault            Boolean  @default(false) @map("is_default")
+  isActive             Boolean  @default(true) @map("is_active")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  category      ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  quantityUnit  QuantityUnit    @relation(fields: [quantityUnitId], references: [id], onDelete: Restrict)
+  packagingType PackagingType   @relation(fields: [packagingTypeId], references: [id], onDelete: Restrict)
+
+  @@unique([categoryId, quantityUnitId, packagingTypeId])
+  @@map("category_options")
 }
 
 model PaymentOrder {

@@ -56,7 +56,7 @@ export async function createProductAction(
   const parsed = newProductSchema.safeParse({
     name,
     slug: slugInput || slugify(name),
-    category: stringValue(formData.get("category")),
+    categoryId: stringValue(formData.get("categoryId")),
     description: stringValue(formData.get("description")),
     imagePath: stringValue(formData.get("imagePath")),
     imageAlt: stringValue(formData.get("imageAlt")),
@@ -69,6 +69,17 @@ export async function createProductAction(
     return {
       error: "Check the highlighted fields.",
       fieldErrors: fieldErrors(parsed.error),
+    };
+  }
+
+  const categoryRows = await getPrismaClient().$queryRaw<Array<{ slug: string }>>`
+    select slug from public.product_categories where id = ${parsed.data.categoryId}::uuid limit 1
+  `;
+  const categorySlug = categoryRows[0]?.slug;
+  if (!categorySlug) {
+    return {
+      error: "Choose a valid category.",
+      fieldErrors: { categoryId: "Choose a category from the list." },
     };
   }
 
@@ -89,12 +100,13 @@ export async function createProductAction(
     createdId = await getPrismaClient().$transaction(async (tx) => {
       const rows = await tx.$queryRaw<Array<{ id: string }>>`
         insert into public.products (
-          name, slug, category, description, image_path, image_alt, is_active, is_sample
+          name, slug, category, category_id, description, image_path, image_alt, is_active, is_sample
         )
         values (
           ${parsed.data.name},
           ${parsed.data.slug},
-          ${parsed.data.category},
+          ${categorySlug},
+          ${parsed.data.categoryId}::uuid,
           nullif(${parsed.data.description}, ''),
           nullif(${imagePath}, ''),
           nullif(${parsed.data.imageAlt}, ''),
@@ -142,7 +154,7 @@ export async function updateProductAction(productId: string, formData: FormData)
   const parsed = productUpdateSchema.safeParse({
     name: stringValue(formData.get("name")),
     slug: stringValue(formData.get("slug")),
-    category: stringValue(formData.get("category")),
+    categoryId: stringValue(formData.get("categoryId")),
     description: stringValue(formData.get("description")),
     imagePath: stringValue(formData.get("imagePath")),
     imageAlt: stringValue(formData.get("imageAlt")),
@@ -154,10 +166,22 @@ export async function updateProductAction(productId: string, formData: FormData)
     redirect(productPath(productId, { error: firstError(fieldErrors(parsed.error)) }));
   }
 
-  const existing = await getPrismaClient().$queryRaw<Array<{ image_path: string | null }>>`
-    select image_path from public.products where id = ${productId}::uuid limit 1
-  `;
+  const [existing, categoryRows] = await Promise.all([
+    getPrismaClient().$queryRaw<Array<{ image_path: string | null }>>`
+      select image_path from public.products where id = ${productId}::uuid limit 1
+    `,
+    getPrismaClient().$queryRaw<Array<{ slug: string }>>`
+      select slug from public.product_categories
+      where id = ${parsed.data.categoryId}::uuid
+      limit 1
+    `,
+  ]);
   if (existing.length === 0) redirect("/admin/products/?error=Unknown%20product.");
+
+  const categorySlug = categoryRows[0]?.slug;
+  if (!categorySlug) {
+    redirect(productPath(productId, { error: "Choose a category from the list." }));
+  }
 
   let imagePath = parsed.data.imagePath;
   let uploadedPath: string | null = null;
@@ -175,7 +199,8 @@ export async function updateProductAction(productId: string, formData: FormData)
       update public.products
          set name = ${parsed.data.name},
              slug = ${parsed.data.slug},
-             category = ${parsed.data.category},
+             category = ${categorySlug},
+             category_id = ${parsed.data.categoryId}::uuid,
              description = nullif(${parsed.data.description}, ''),
              image_path = nullif(${imagePath}, ''),
              image_alt = nullif(${parsed.data.imageAlt}, ''),

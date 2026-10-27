@@ -6,9 +6,10 @@ import { createProductAction } from "@/app/admin/(dashboard)/products/actions";
 import { ProductImageUpload } from "@/components/admin/product-image-upload";
 import { AdminAlert, AdminField } from "@/components/admin/ui";
 import { slugify } from "@/lib/slug";
+import type { CategoryChoice } from "@/server/admin/categories";
 import { emptyFormState } from "@/server/admin/action-state";
 
-export function NewProductForm() {
+export function NewProductForm({ categories }: { categories: CategoryChoice[] }) {
   const [state, formAction, pending] = useActionState(createProductAction, emptyFormState);
   const [slug, setSlug] = useState("");
   const [slugEdited, setSlugEdited] = useState(false);
@@ -65,21 +66,34 @@ export function NewProductForm() {
 
       <div className="admin-form__grid">
         <AdminField
-          error={state.fieldErrors?.category}
-          hint="Groups products in the catalogue, e.g. copra."
-          id="category"
+          error={state.fieldErrors?.categoryId}
+          hint={
+            categories.length === 0
+              ? "No categories exist yet. Create one under Categories before adding products."
+              : "Controls the shop category and the quantity/packaging options shown."
+          }
+          id="categoryId"
           label="Category"
         >
-          <input
-            aria-describedby={`category-hint${state.fieldErrors?.category ? " category-error" : ""}`}
+          <select
+            aria-describedby={`categoryId-hint${state.fieldErrors?.categoryId ? " categoryId-error" : ""}`}
             className="admin-input"
-            defaultValue="copra"
-            id="category"
-            maxLength={40}
-            name="category"
+            defaultValue=""
+            disabled={categories.length === 0}
+            id="categoryId"
+            name="categoryId"
             required
-            type="text"
-          />
+          >
+            <option disabled value="">
+              {categories.length === 0 ? "No categories available" : "Select a category"}
+            </option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.parentName ? `${category.parentName} › ${category.name}` : category.name}
+                {category.isActive ? "" : " (hidden)"}
+              </option>
+            ))}
+          </select>
         </AdminField>
 
         <AdminField

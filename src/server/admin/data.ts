@@ -16,6 +16,7 @@ export type ProductSummary = {
   name: string;
   slug: string;
   category: string;
+  categoryId: string | null;
   isActive: boolean;
   updatedAt: Date;
   price: number | null;
@@ -28,6 +29,7 @@ type ProductSummaryRow = {
   name: string;
   slug: string;
   category: string;
+  category_id: string | null;
   is_active: boolean;
   updated_at: Date;
   price: Numeric;
@@ -41,6 +43,7 @@ function toProductSummary(row: ProductSummaryRow): ProductSummary {
     name: row.name,
     slug: row.slug,
     category: row.category,
+    categoryId: row.category_id,
     isActive: row.is_active,
     updatedAt: row.updated_at,
     price: toNumber(row.price),
@@ -55,13 +58,15 @@ export async function listProducts(search = ""): Promise<ProductSummary[]> {
       p.id,
       p.name,
       p.slug,
-      p.category,
+      coalesce(c.name, p.category) as category,
+      p.category_id,
       p.is_active,
       p.updated_at,
       current_price.price_per_kg::text as price,
       i.stock_kg::text as stock_kg,
       i.low_stock_threshold_kg::text as low_stock_threshold_kg
     from public.products p
+    left join public.product_categories c on c.id = p.category_id
     left join public.product_inventory i on i.product_id = p.id
     left join lateral (
       select pp.price_per_kg
@@ -76,6 +81,7 @@ export async function listProducts(search = ""): Promise<ProductSummary[]> {
       or p.name ilike ${`%${search}%`}
       or p.slug ilike ${`%${search}%`}
       or p.category ilike ${`%${search}%`}
+      or c.name ilike ${`%${search}%`}
     )
     order by p.name asc
   `;
@@ -130,7 +136,8 @@ export async function getProductDetail(id: string): Promise<ProductDetail | null
       p.id,
       p.name,
       p.slug,
-      p.category,
+      coalesce(c.name, p.category) as category,
+      p.category_id,
       p.is_active,
       p.created_at,
       p.updated_at,
@@ -143,6 +150,7 @@ export async function getProductDetail(id: string): Promise<ProductDetail | null
       i.stock_kg::text as stock_kg,
       i.low_stock_threshold_kg::text as low_stock_threshold_kg
     from public.products p
+    left join public.product_categories c on c.id = p.category_id
     left join public.product_inventory i on i.product_id = p.id
     left join lateral (
       select pp.price_per_kg, pp.currency

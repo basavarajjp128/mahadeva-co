@@ -137,6 +137,34 @@ export const productImagePathSchema = z
     "Use a /path from the public folder or an https:// URL.",
   );
 
+const optionalUuid = (message: string) =>
+  z
+    .string()
+    .trim()
+    .refine(
+      (value) =>
+        value === "" ||
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value),
+      message,
+    );
+
+const requiredUuid = (message: string) =>
+  z
+    .string()
+    .trim()
+    .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, message);
+
+const categorySlug = z
+  .string()
+  .trim()
+  .transform((value) => value.toLowerCase())
+  .pipe(
+    z
+      .string()
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase words separated by single dashes.")
+      .max(80, "Use 80 characters or fewer."),
+  );
+
 export const productUpdateSchema = z.object({
   name: z
     .string()
@@ -152,7 +180,7 @@ export const productUpdateSchema = z.object({
         .string()
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase words separated by single dashes."),
     ),
-  category: z.string().trim().min(2, "Enter a category.").max(40, "Use 40 characters or fewer."),
+  categoryId: requiredUuid("Choose a category."),
   description: z.string().trim().max(5000, "Use 5,000 characters or fewer."),
   imagePath: productImagePathSchema,
   imageAlt: z.string().trim().max(160, "Use 160 characters or fewer."),
@@ -174,6 +202,76 @@ export const optionalPriceSchema = z
 
 export const newProductSchema = productUpdateSchema.extend({
   price: optionalPriceSchema,
+});
+
+export const categorySchema = z.object({
+  name: z.string().trim().min(2, "Enter a category name.").max(80, "Use 80 characters or fewer."),
+  slug: categorySlug,
+  parentId: optionalUuid("Choose a valid parent category."),
+  description: z.string().trim().max(500, "Use 500 characters or fewer."),
+  imageUrl: productImagePathSchema,
+  displayOrder: z
+    .string()
+    .trim()
+    .regex(/^\d{1,4}$/, "Use a whole number from 0 to 9999."),
+  isActive: z.boolean(),
+});
+
+export const categoryUnitSchema = z.object({
+  name: z.string().trim().min(1, "Enter a unit name.").max(40, "Use 40 characters or fewer."),
+  symbol: z
+    .string()
+    .trim()
+    .min(1, "Enter a unit symbol.")
+    .max(12, "Use 12 characters or fewer.")
+    .regex(/^[^\s]+$/, "Do not use spaces in the symbol."),
+  unitType: z.enum(["weight", "volume", "count", "length", "other"], "Choose a unit type."),
+  baseUnitSymbol: z.string().trim().max(12, "Use 12 characters or fewer."),
+  conversionToBase: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value === "" || /^\d+(\.\d{1,6})?$/.test(value),
+      "Enter a conversion with up to 6 decimals.",
+    )
+    .refine(
+      (value) => value === "" || (Number(value) > 0 && Number(value) <= 1_000_000_000),
+      "Conversion must be greater than zero.",
+    ),
+  isActive: z.boolean(),
+});
+
+export const packagingTypeSchema = z.object({
+  name: z.string().trim().min(1, "Enter a packaging name.").max(40, "Use 40 characters or fewer."),
+  description: z.string().trim().max(300, "Use 300 characters or fewer."),
+  isReusable: z.boolean(),
+  isActive: z.boolean(),
+});
+
+export const categoryOptionSchema = z.object({
+  quantityUnitId: requiredUuid("Choose a measurement unit."),
+  packagingTypeId: requiredUuid("Choose a packaging type."),
+  defaultPackSize: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value === "" || /^\d+(\.\d{1,3})?$/.test(value),
+      "Enter a pack size with up to 3 decimals.",
+    )
+    .refine(
+      (value) => value === "" || (Number(value) > 0 && Number(value) <= 1_000_000),
+      "Pack size must be greater than zero.",
+    ),
+  minimumOrderQuantity: z
+    .string()
+    .trim()
+    .regex(/^\d+(\.\d{1,3})?$/, "Enter a minimum order with up to 3 decimals.")
+    .refine(
+      (value) => Number(value) > 0 && Number(value) <= 1_000_000,
+      "Minimum order must be greater than zero.",
+    ),
+  isDefault: z.boolean(),
+  isActive: z.boolean(),
 });
 
 export const priceUpdateSchema = z.object({
