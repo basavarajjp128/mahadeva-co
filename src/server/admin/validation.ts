@@ -128,6 +128,15 @@ const optionalDecimal = (options: { min: number; max: number; label: string }) =
       `Enter a ${options.label} between ${options.min} and ${options.max}.`,
     );
 
+export const productImagePathSchema = z
+  .string()
+  .trim()
+  .max(2048, "Use 2,048 characters or fewer.")
+  .refine(
+    (value) => value === "" || /^\/[^\s]*$/.test(value) || /^https:\/\/[^\s]+$/.test(value),
+    "Use a /path from the public folder or an https:// URL.",
+  );
+
 export const productUpdateSchema = z.object({
   name: z
     .string()
@@ -145,7 +154,26 @@ export const productUpdateSchema = z.object({
     ),
   category: z.string().trim().min(2, "Enter a category.").max(40, "Use 40 characters or fewer."),
   description: z.string().trim().max(5000, "Use 5,000 characters or fewer."),
+  imagePath: productImagePathSchema,
+  imageAlt: z.string().trim().max(160, "Use 160 characters or fewer."),
   isActive: z.boolean(),
+  isSample: z.boolean(),
+});
+
+export const optionalPriceSchema = z
+  .string()
+  .trim()
+  .refine(
+    (value) => value === "" || /^\d+(\.\d{1,2})?$/.test(value),
+    "Enter a price with up to 2 decimals.",
+  )
+  .refine(
+    (value) => value === "" || (Number(value) > 0 && Number(value) <= 10_000_000),
+    "Enter a price between 0.01 and 10,000,000.",
+  );
+
+export const newProductSchema = productUpdateSchema.extend({
+  price: optionalPriceSchema,
 });
 
 export const priceUpdateSchema = z.object({

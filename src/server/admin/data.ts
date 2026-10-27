@@ -101,6 +101,9 @@ export type ProductDetail = ProductSummary & {
   description: string | null;
   createdAt: Date;
   currency: string | null;
+  imagePath: string | null;
+  imageAlt: string | null;
+  isSample: boolean;
   grades: ProductGrade[];
   priceHistory: PriceHistoryEntry[];
   purchaseRule: {
@@ -114,6 +117,9 @@ type ProductDetailRow = ProductSummaryRow & {
   description: string | null;
   created_at: Date;
   price_currency: string | null;
+  image_path: string | null;
+  image_alt: string | null;
+  is_sample: boolean;
 };
 
 export async function getProductDetail(id: string): Promise<ProductDetail | null> {
@@ -129,6 +135,9 @@ export async function getProductDetail(id: string): Promise<ProductDetail | null
       p.created_at,
       p.updated_at,
       p.description,
+      p.image_path,
+      p.image_alt,
+      p.is_sample,
       current_price.currency as price_currency,
       current_price.price_per_kg::text as price,
       i.stock_kg::text as stock_kg,
@@ -198,6 +207,9 @@ export async function getProductDetail(id: string): Promise<ProductDetail | null
     description: row.description,
     createdAt: row.created_at,
     currency: row.price_currency ?? "INR",
+    imagePath: row.image_path,
+    imageAlt: row.image_alt,
+    isSample: row.is_sample,
     grades: gradeRows.map((grade) => ({
       id: grade.id,
       name: grade.name,

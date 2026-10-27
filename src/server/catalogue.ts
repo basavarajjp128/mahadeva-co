@@ -8,8 +8,9 @@ import type { Prisma, Product as DatabaseProduct } from "@/generated/prisma/clie
 
 const fallbackImage = "/images/copra-stock.jpg";
 const safeProductSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-// These are the columns in the existing products table. Keep the public
-// catalogue readable before optional merchandising columns are migrated.
+// Optional merchandising columns (image_path, image_alt) are added by the
+// product_images migration. Selecting them here keeps the storefront showing
+// admin-managed images while falling back to the bundled copra photo.
 const catalogueSelect = {
   id: true,
   slug: true,
@@ -17,11 +18,22 @@ const catalogueSelect = {
   description: true,
   category: true,
   isActive: true,
+  isSample: true,
+  image: true,
+  imageAlt: true,
 } satisfies Prisma.ProductSelect;
 
 type CatalogueRow = Pick<
   DatabaseProduct,
-  "id" | "slug" | "displayName" | "description" | "category" | "isActive"
+  | "id"
+  | "slug"
+  | "displayName"
+  | "description"
+  | "category"
+  | "isActive"
+  | "isSample"
+  | "image"
+  | "imageAlt"
 >;
 
 function toCatalogueProduct(row: CatalogueRow): Product {
@@ -32,9 +44,9 @@ function toCatalogueProduct(row: CatalogueRow): Product {
     description: row.description,
     category: row.category,
     isActive: row.isActive,
-    isSample: true,
-    image: fallbackImage,
-    imageAlt: `${row.displayName} product image`,
+    isSample: row.isSample,
+    image: row.image || fallbackImage,
+    imageAlt: row.imageAlt || `${row.displayName} product image`,
     packagingInformation: null,
     enquiryAvailability: "whatsapp",
     price: null,

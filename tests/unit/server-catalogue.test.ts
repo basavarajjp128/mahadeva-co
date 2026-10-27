@@ -50,6 +50,9 @@ describe("server catalogue queries", () => {
         description: true,
         category: true,
         isActive: true,
+        isSample: true,
+        image: true,
+        imageAlt: true,
       },
     });
     expect(products).toEqual([
@@ -60,6 +63,7 @@ describe("server catalogue queries", () => {
         imageAlt: "Coconut copra product image",
         price: null,
         isActive: true,
+        isSample: false,
       }),
     ]);
   });
@@ -76,8 +80,27 @@ describe("server catalogue queries", () => {
         description: true,
         category: true,
         isActive: true,
+        isSample: true,
+        image: true,
+        imageAlt: true,
       },
     });
+  });
+
+  it("uses admin-managed image paths and alt text when present", async () => {
+    vi.stubEnv("ENABLE_PAYMENT_TEST_DATA", "false");
+    catalogueDb.product.findMany.mockResolvedValue([
+      {
+        ...databaseProduct,
+        image: "/images/gallery/split-copra-coconuts.jpg",
+        imageAlt: "Split copra coconuts drying in the sun",
+      },
+    ]);
+
+    const [product] = await getActiveProducts();
+
+    expect(product.image).toBe("/images/gallery/split-copra-coconuts.jpg");
+    expect(product.imageAlt).toBe("Split copra coconuts drying in the sun");
   });
 
   it("rejects unsafe slugs and uses a local placeholder image", async () => {

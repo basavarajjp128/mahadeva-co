@@ -19,7 +19,11 @@ export function AdminField({
         {label}
       </label>
       {children}
-      {hint ? <p className="admin-field__hint">{hint}</p> : null}
+      {hint ? (
+        <p className="admin-field__hint" id={`${id}-hint`}>
+          {hint}
+        </p>
+      ) : null}
       {error ? (
         <p className="admin-field__error" id={`${id}-error`} role="alert">
           {error}

@@ -29,7 +29,7 @@ export default async function ShopPage() {
         {products.length > 0 ? (
           <div className="shop-product-grid">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} titleLevel="h2" />
             ))}
           </div>
         ) : (

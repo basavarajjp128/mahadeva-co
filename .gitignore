@@ -25,6 +25,10 @@ test-results/
 .env*
 !.env.example
 
+# Admin-uploaded product images are runtime content, not source.
+/public/uploads/products/*
+!/public/uploads/products/.gitkeep
+
 # Logs and debug output
 npm-debug.log*
 yarn-debug.log*

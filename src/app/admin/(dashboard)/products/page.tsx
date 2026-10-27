@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminAlert, AdminEmpty, AdminPageHeader } from "@/components/admin/ui";
+import { canEdit, requireAdmin } from "@/server/admin/auth";
 import { listProducts } from "@/server/admin/data";
 import { formatDateTime, formatKg, formatMoney } from "@/server/admin/format";
 
@@ -17,6 +18,8 @@ function first(value: string | string[] | undefined): string {
 }
 
 export default async function AdminProductsPage({ searchParams }: { searchParams: SearchParams }) {
+  const admin = await requireAdmin();
+  const writable = canEdit(admin.role);
   const params = await searchParams;
   const search = first(params.q).slice(0, 80);
   const error = first(params.error);
@@ -26,11 +29,18 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
     <>
       <AdminPageHeader
         actions={
-          <Link className="admin-btn admin-btn--secondary" href="/shop/" target="_blank">
-            View shop ↗
-          </Link>
+          <>
+            <Link className="admin-btn admin-btn--secondary" href="/shop/" target="_blank">
+              View shop ↗
+            </Link>
+            {writable ? (
+              <Link className="admin-btn admin-btn--primary" href="/admin/products/new/">
+                Add product
+              </Link>
+            ) : null}
+          </>
         }
-        description="Edit catalogue content, keep one current price per product and maintain grades."
+        description="Add products with photos, edit catalogue content, keep one current price per product and maintain grades."
         eyebrow="Catalogue"
         title="Products"
       />

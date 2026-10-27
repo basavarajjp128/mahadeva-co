@@ -4,7 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EnquiryLink } from "@/components/site/enquiry-link";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  titleLevel = "h3",
+}: {
+  product: Product;
+  titleLevel?: "h2" | "h3";
+}) {
+  const Title = titleLevel;
   return (
     <article aria-labelledby={`product-${product.slug}`} className="product-card" data-reveal>
       <div className="product-card__image">
@@ -12,9 +19,9 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
       <div className="product-card__body">
         <div className="product-card__topline">
-          <h3 className="product-card__title" id={`product-${product.slug}`}>
+          <Title className="product-card__title" id={`product-${product.slug}`}>
             {product.displayName}
-          </h3>
+          </Title>
           <Badge>
             {product.isTestData ? "TEST ONLY" : product.isSample ? "Sample listing" : "Catalogue"}
           </Badge>

@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ["127.0.0.1"],
+  experimental: {
+    // Admin product photos are uploaded through a Server Action. Leave room
+    // for multipart overhead on top of the 5 MB image limit enforced in code.
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
+  },
   images: {
     unoptimized: true,
   },

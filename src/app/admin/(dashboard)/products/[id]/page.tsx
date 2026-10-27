@@ -9,6 +9,7 @@ import {
   updatePurchaseRuleAction,
 } from "@/app/admin/(dashboard)/products/actions";
 import { AdminAlert, AdminField, AdminPageHeader } from "@/components/admin/ui";
+import { ProductImageUpload } from "@/components/admin/product-image-upload";
 import { requireAdmin } from "@/server/admin/auth";
 import { getProductDetail } from "@/server/admin/data";
 import { formatDateTime, formatKg, formatMoney } from "@/server/admin/format";
@@ -30,6 +31,7 @@ function first(value: string | string[] | undefined): string {
 }
 
 const savedMessages: Record<string, string> = {
+  created: "Product created. Add stock, grades and a checkout rule when ready.",
   details: "Product details saved.",
   price: "Price updated and added to price history.",
   rules: "Checkout rule saved.",
@@ -133,6 +135,62 @@ export default async function AdminProductPage({ params, searchParams }: PagePro
                     </span>
                   </label>
                 </div>
+              </div>
+
+              <div className="admin-form__grid">
+                <AdminField
+                  hint="Optional alternative to an upload: a /path from public or an https:// URL."
+                  id="imagePath"
+                  label="Image path or URL"
+                >
+                  <input
+                    className="admin-input"
+                    defaultValue={product.imagePath ?? ""}
+                    id="imagePath"
+                    maxLength={2048}
+                    name="imagePath"
+                    placeholder="/images/copra-stock.jpg"
+                    spellCheck={false}
+                    type="text"
+                  />
+                </AdminField>
+
+                <AdminField
+                  hint="Describe the image for screen readers. Defaults to the product name when blank."
+                  id="imageAlt"
+                  label="Image alt text"
+                >
+                  <input
+                    className="admin-input"
+                    defaultValue={product.imageAlt ?? ""}
+                    id="imageAlt"
+                    maxLength={160}
+                    name="imageAlt"
+                    placeholder="Dried copra pieces on a drying mat"
+                    type="text"
+                  />
+                </AdminField>
+              </div>
+
+              <ProductImageUpload
+                initialAlt={product.imageAlt ?? product.name}
+                initialImage={product.imagePath}
+                key={product.imagePath ?? "no-image"}
+              />
+
+              <div className="admin-option-grid">
+                <label className="admin-check" htmlFor="isSample">
+                  <input
+                    defaultChecked={product.isSample}
+                    id="isSample"
+                    name="isSample"
+                    type="checkbox"
+                  />
+                  <span>
+                    <strong>Sample listing</strong>
+                    <span>Marks the product as information-only until terms are confirmed.</span>
+                  </span>
+                </label>
               </div>
 
               <AdminField
