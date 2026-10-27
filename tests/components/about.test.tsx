@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import AboutPage from "@/app/about/page";
+import AboutPage from "@/app/(site)/about/page";
 
 describe("about page", () => {
   it("shows the supplied business description and marks the story as editable placeholder content", () => {

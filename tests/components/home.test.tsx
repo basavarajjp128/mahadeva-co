@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import Home from "@/app/page";
+import Home from "@/app/(site)/page";
 const { homeProduct } = vi.hoisted(() => ({
   homeProduct: {
     id: "00000000-0000-4000-8000-000000000001",

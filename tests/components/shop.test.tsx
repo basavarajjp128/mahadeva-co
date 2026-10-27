@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import ShopPage from "@/app/shop/page";
+import ShopPage from "@/app/(site)/shop/page";
 import { QuantityEnquiry } from "@/components/catalogue/quantity-enquiry";
 import { EnquiryWorkflow } from "@/components/enquiries/enquiry-workflow";
 import type { Product } from "@/types/product";

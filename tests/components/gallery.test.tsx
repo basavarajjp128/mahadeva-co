@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import GalleryPage from "@/app/gallery/page";
+import GalleryPage from "@/app/(site)/gallery/page";
 import { galleryItems } from "@/data/gallery";
 
 describe("gallery page", () => {
